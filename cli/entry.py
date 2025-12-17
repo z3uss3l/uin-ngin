@@ -1,10 +1,15 @@
-# path: uin_ngin/cli/entry.py
+# cli/entry.py
 import argparse
-from uin_ngin.main import run
+from core.utils.edge_extraction import create_uin_package
+from pathlib import Path
 
 def main():
-    p = argparse.ArgumentParser("uin-ngin")
-    p.add_argument("--config")
-    p.add_argument("mode", choices=["cli","api","benchmark"])
-    args = p.parse_args()
-    run(args)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input")
+    parser.add_argument("-o", "--output", default="./uin_output")
+    args = parser.parse_args()
+    create_uin_package(Path(args.input), Path(args.output))
+    print("UIN-Paket erstellt!")
+
+if __name__ == "__main__":
+    main()
