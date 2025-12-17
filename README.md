@@ -1,6 +1,5 @@
 # uin-ngin
-can you imagine?
-# uin-ngin
+*can you imagine?*
 
 Universal Image Notation Engine (uin-ngin) v0.7 – der Motor für Spezifikation, Ausführung und Monitoring.  
 Während [UIN](https://github.com/z3uss3l/uin-universal-image-notation) die Sprache liefert, ist uin-ngin die Engine, die diese Sprache **ausführt, testet und sichtbar macht**.
