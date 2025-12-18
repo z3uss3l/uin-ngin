@@ -1,0 +1,8 @@
+{
+  "name": "@uin/core",
+  "version": "0.1.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  }
+}
