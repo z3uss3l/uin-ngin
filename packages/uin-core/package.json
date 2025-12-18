@@ -1,8 +1,16 @@
 {
   "name": "@uin/core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "canvas": "^2.11.2"
+  },
+  "peerDependenciesMeta": {
+    "canvas": {
+      "optional": true
+    }
   }
 }
