@@ -6,6 +6,6 @@
     ".": "./src/index.js"
   },
   "dependencies": {
-    "@uin/core": "workspace:*"
+    "@uin/core": "file:../uin-core"
   }
 }

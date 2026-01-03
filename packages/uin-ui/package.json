@@ -6,8 +6,8 @@
                          "react":  "^18.2.0",
                          "react-dom":  "^18.2.0",
                          "react-scripts":  "5.0.1",
-                         "@uin/core":  "workspace:*",
-                         "@uin/adapters":  "workspace:*",
+                         "@uin/core":  "file:../uin-core",
+                         "@uin/adapters":  "file:../uin-adapters",
                          "lucide-react":  "^0.292.0"
                      },
     "scripts":  {
