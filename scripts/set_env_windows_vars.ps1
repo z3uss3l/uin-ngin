@@ -25,8 +25,8 @@ if ($pathsToAdd.Count -eq 0) {
 $current = [Environment]::GetEnvironmentVariable('Path','User') -split ';' | Where-Object { $_ -ne '' }
 $added = @()
 foreach ($p in $pathsToAdd) {
-    $norm = (Get-Item -LiteralPath $p -ErrorAction SilentlyContinue)?.FullName
-    if (-not $norm) { Write-Warning "Path not found: $p (skipping)"; continue }
+  $itm = Get-Item -LiteralPath $p -ErrorAction SilentlyContinue
+  if ($itm) { $norm = $itm.FullName } else { $norm = $null }
     if (-not ($current -contains $norm)) { $current += $norm; $added += $norm }
 }
 

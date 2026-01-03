@@ -2,11 +2,10 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-jest.mock('@uin/adapters', () => ({
-  toSVG: jest.fn(() => '<svg></svg>'),
-  toDepthMap: jest.fn(() => Promise.resolve('data:image/png;base64,AAA')),
-  toPrompt: jest.fn(() => 'test prompt')
-}));
+const adapters = require('@uin/adapters');
+adapters.toSVG = jest.fn(() => '<svg></svg>');
+adapters.toDepthMap = jest.fn(() => Promise.resolve('data:image/png;base64,AAA'));
+adapters.toPrompt = jest.fn(() => 'test prompt');
 
 import UINHybridTool from '../App';
 
@@ -22,13 +21,19 @@ describe('UINHybridTool', () => {
   test('send button disabled until depth map available and sends to API', async () => {
     render(<UINHybridTool />);
 
+    // switch to Export tab where the send button is rendered
+    fireEvent.click(screen.getByRole('button', { name: /export/i }));
+
     const sendButton = screen.getByRole('button', { name: /send to comfyui/i });
     expect(sendButton).toBeDisabled();
 
     // Wait for async depth map generation
     await waitFor(() => expect(global.fetch).not.toHaveBeenCalled());
 
-    // After depth map resolves, button should be enabled
+    // Wait for depth map to be present (image appears when depth map ready)
+    await waitFor(() => expect(screen.getByAltText(/depth map/i)).toBeInTheDocument());
+
+    // Now the send button should be enabled
     await waitFor(() => expect(sendButton).toBeEnabled());
 
     fireEvent.click(sendButton);
@@ -36,6 +41,6 @@ describe('UINHybridTool', () => {
     await waitFor(() => expect(global.fetch).toHaveBeenCalledWith('/api/generate', expect.objectContaining({ body: expect.stringContaining('depthMapBase64') })));
 
     // Notification should appear
-    expect(screen.getByText(/enqueued/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText(/enqueued/i)).toBeInTheDocument());
   });
 });
