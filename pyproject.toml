@@ -1,25 +1,32 @@
-# path: pyproject.toml
 [project]
 name = "uin-core"
 version = "1.0.0"
 description = "Universal Image Notation – Core Engine"
+readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2.5"]
+authors = [{name = "Your Name", email = "you@example.com"}]
+
+# Runtime dependencies (consolidated, PEP 621)
+dependencies = [
+  "pydantic>=2.5",
+  "opencv-python>=4.8.0",
+  "pillow>=10.0.0",
+  "numpy>=1.24.0",
+  "jsonschema>=4.0",
+  "fastapi>=0.104.0",
+  "uvicorn>=0.24.0",
+  "mcp>=0.1.0",
+]
 
 [project.scripts]
 uin = "uin.cli:main"
 
+[project.optional-dependencies]
+# developer dependencies for local testing and CI
+dev = ["pytest>=7.0","requests>=2.30","httpx>=0.28"]
+
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-opencv-python = ">=4.8.0"
-pillow = ">=10.0.0"
-numpy = ">=1.24.0"
-jsonschema = "^4.0"          # für Validation
-pydantic = ">=2.0.0"         # für zukünftige Models
-fastapi = ">=0.104.0"        # für API später
-uvicorn = ">=0.24.0"         # für Server
-mcp = ">=0.1.0"              # für MCP-Tools später

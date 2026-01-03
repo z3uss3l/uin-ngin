@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/uin_core.egg-info/PKG-INFO
+src/uin_core.egg-info/SOURCES.txt
+src/uin_core.egg-info/dependency_links.txt
+src/uin_core.egg-info/entry_points.txt
+src/uin_core.egg-info/requires.txt
+src/uin_core.egg-info/top_level.txt
+tests/test_benchmark.py
