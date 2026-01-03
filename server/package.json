@@ -4,7 +4,8 @@
   "description": "Bridge server between React and ComfyUI",
   "main": "comfyui-bridge.js",
   "scripts": {
-    "start": "node comfyui-bridge.js"
+    "start": "node comfyui-bridge.js",
+    "test": "node test_smoke.js"
   },
   "dependencies": {
     "express": "^4.18.2",

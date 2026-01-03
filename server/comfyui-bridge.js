@@ -77,14 +77,14 @@ app.get('/api/health', (req, res) => {
 });
 
 const PORT = 3001;
-app.listen(PORT, () => {
-  console.log(`
-╔═══════════════════════════════════════╗
-║   🌉 UIN ComfyUI Bridge Server       ║
-║   Running on http://localhost:${PORT}  ║
-╚═══════════════════════════════════════╝
+// Serve static UI (if build exists)
+const uiPath = path.join(__dirname, '..', 'packages', 'uin-ui', 'build');
+if (fs.existsSync(uiPath)) {
+  app.use(express.static(uiPath));
+  app.get('/', (req, res) => res.sendFile(path.join(uiPath, 'index.html')));
+  app.get('/gui', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'gui.html')));
+}
 
-Ready to receive requests from React app.
-Make sure ComfyUI is running on port 8188!
-  `);
+app.listen(PORT, () => {
+  console.log(`UIN ComfyUI Bridge running on http://localhost:${PORT}`);
 });

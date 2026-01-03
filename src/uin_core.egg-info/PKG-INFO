@@ -1,3 +1,47 @@
+Metadata-Version: 2.4
+Name: uin-core
+Version: 1.0.0
+Summary: Universal Image Notation – Core Engine
+Author-email: Your Name <you@example.com>
+License: MIT License
+        
+        Copyright (c) 2025 N0Nzense
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic>=2.5
+Requires-Dist: opencv-python>=4.8.0
+Requires-Dist: pillow>=10.0.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: jsonschema>=4.0
+Requires-Dist: fastapi>=0.104.0
+Requires-Dist: uvicorn>=0.24.0
+Requires-Dist: mcp>=0.1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: requests>=2.30; extra == "dev"
+Requires-Dist: httpx>=0.28; extra == "dev"
+Dynamic: license-file
+
 # uin-ngin
 *can you imagine?*
 
@@ -66,59 +110,3 @@ Während [UIN](https://github.com/z3uss3l/uin-universal-image-notation) die Spra
 - **GUI**: Dashboard mit REST-API.  
 - **Monitoring**: Metriken, Benchmarks, Prometheus-Exporter.  
 - **Standards**: ISO/IEC 19794‑5 ab v0.7.
-
----
-
-## Getting Started 🔧
-
-These steps will get the project running locally.
-
-### Python (Backend / CLI / Tests)
-
-1. Create a Python 3.11 venv and activate it.
-
-2. Install runtime and developer dependencies:
-
-```bash
-python -m pip install --upgrade pip
-pip install -e .[dev]
-```
-
-3. Run tests:
-
-```bash
-pytest -q
-```
-
-4. Run CLI (example):
-
-```bash
-python -m uin.cli normalize < input.json > output.json
-```
-
-### Node (Bridge Server & UI)
-
-The repo contains a simple bridge server (`server/comfyui-bridge.js`) and a React UI under `packages/uin-ui`.
-
-1. Install server deps:
-
-```bash
-cd server
-npm ci
-npm start
-```
-
-2. Build the UI (for production):
-
-```bash
-cd packages/uin-ui
-npm ci
-npm run build
-```
-
-The repository includes GitHub Actions workflows to build the UI, deploy to Pages, and run CI checks (`.github/workflows/ci.yml`, `.github/workflows/deploy.yml`).
-
----
-
-If you want, I can also wire up a local `make` or npm script to run the backend + bridge + UI in one command. Let me know how you'd prefer to start the full stack.
-
