@@ -10,7 +10,8 @@ param(
 )
 
 function Normalize-PathEntry($p) {
-    return (Get-Item -Path $p -ErrorAction SilentlyContinue)?.FullName
+    $item = Get-Item -Path $p -ErrorAction SilentlyContinue
+    if ($null -ne $item) { return $item.FullName } else { return $null }
 }
 
 Write-Output "Detecting Git and Node installations..."
