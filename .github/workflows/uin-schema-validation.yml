@@ -1,0 +1,29 @@
+name: UIN schema validation
+
+on:
+  pull_request:
+    paths:
+      - '**/*.uin.json'
+      - 'docs/UINspecificationSchemaV08.json'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/UINspecificationSchemaV08.json'
+
+jobs:
+  validate:
+    name: Validate UIN files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e '.[dev]'
+      - name: Run schema tests
+        run: |
+          pytest -q tests/test_schema_v08.py

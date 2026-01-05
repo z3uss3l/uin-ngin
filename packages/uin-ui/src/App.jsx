@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Download, RefreshCw, Eye, Code, Grid, Layers, Copy } from 'lucide-react';
 import { validateUIN } from '@uin/core';
-import * as adapters from '@uin/adapters';
+
+// Try to require workspace package @uin/adapters; fall back to local stub when not installed
+let adapters;
+try {
+  // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
+  adapters = require('@uin/adapters');
+} catch (e) {
+  // local stub used for tests and when package isn't installed
+  // eslint-disable-next-line global-require
+  adapters = require('./_adapters_stub');
+}
 
 const samples = {
   demo: `{

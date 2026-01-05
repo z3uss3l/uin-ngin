@@ -1,0 +1,19 @@
+{
+  "version": "0.8",
+  "metadata": {
+    "title": "Sample UIN v0.8",
+    "conformance": "UIN-Core-0.8"
+  },
+  "canvas": {
+    "aspect_ratio": "16:9",
+    "bounds": { "x": [0, 1], "y": [0, 1], "z": [0, 1] },
+    "coordinate_system": "normalized_0_1"
+  },
+  "objects": [
+    {
+      "id": "obj1",
+      "type": "box",
+      "position": { "x": 0.5, "y": 0.5, "z": 0.0 }
+    }
+  ]
+}
