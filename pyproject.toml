@@ -5,7 +5,6 @@ description = "Universal Image Notation – Core Engine"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
-authors = [{ name = "Your Name", email = "you@example.com" }]
 
 dependencies = [
   "pydantic>=2.5",
@@ -15,16 +14,19 @@ dependencies = [
   "jsonschema>=4.0",
   "fastapi>=0.110.0",
   "uvicorn>=0.27.0",
+  "mcp>=0.1.0",
 ]
 
 [project.scripts]
-uin = "cli.main:main"
+uin = "uin.cli.main:main"
 
-[project.optional-dependencies]
-dev = [
-  "pytest>=7.0",
-  "requests>=2.30",
-  "httpx>=0.28"
+[tool.setuptools]
+packages = [
+  "uin",
+  "uin.cli",
+  "core",
+  "adapters",
+  "api",
 ]
 
 [build-system]
