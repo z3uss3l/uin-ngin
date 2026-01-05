@@ -2,15 +2,19 @@ import argparse
 from pathlib import Path
 import sys
 
-def main():
+
+def main() -> None:
     parser = argparse.ArgumentParser(
         prog="uin",
-        description="UIN-NGIN CLI (Phase-1 bootstrapped)"
+        description="UIN CLI (bootstrapped runtime)"
     )
 
     subparsers = parser.add_subparsers(dest="command")
 
-    extract = subparsers.add_parser("extract", help="Placeholder extract command")
+    extract = subparsers.add_parser(
+        "extract",
+        help="Extract UIN data from image"
+    )
     extract.add_argument("image", type=Path)
 
     args = parser.parse_args()
