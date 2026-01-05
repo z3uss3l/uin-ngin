@@ -120,5 +120,3 @@ The repository includes GitHub Actions workflows to build the UI, deploy to Page
 
 ---
 
-If you want, I can also wire up a local `make` or npm script to run the backend + bridge + UI in one command. Let me know how you'd prefer to start the full stack.
-
