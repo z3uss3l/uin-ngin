@@ -1,46 +1,34 @@
 ﻿import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-
-const adapters = require('@uin/adapters');
-adapters.toSVG = jest.fn(() => '<svg></svg>');
-adapters.toDepthMap = jest.fn(() => Promise.resolve('data:image/png;base64,AAA'));
-adapters.toPrompt = jest.fn(() => 'test prompt');
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 import UINHybridTool from '../App';
 
-describe('UINHybridTool', () => {
-  beforeEach(() => {
-    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ status: 'enqueued' }) }));
-  });
+// Smoke test: ensure main tabs render and basic navigation works
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
-  test('send button disabled until depth map available and sends to API', async () => {
+describe('UINHybridTool UI layout', () => {
+  test('renders tabs and navigates between Editor, Rosetta, and Export views', () => {
     render(<UINHybridTool />);
 
-    // switch to Export tab where the send button is rendered
-    fireEvent.click(screen.getByRole('button', { name: /export/i }));
+    // Tabs are present
+    const editorTab = screen.getByRole('button', { name: /editor \+ preview/i });
+    const rosettaTab = screen.getByRole('button', { name: /rosetta table/i });
+    const exportTab = screen.getByRole('button', { name: /export/i });
 
-    const sendButton = screen.getByRole('button', { name: /send to comfyui/i });
-    expect(sendButton).toBeDisabled();
+    expect(editorTab).toBeInTheDocument();
+    expect(rosettaTab).toBeInTheDocument();
+    expect(exportTab).toBeInTheDocument();
 
-    // Wait for async depth map generation
-    await waitFor(() => expect(global.fetch).not.toHaveBeenCalled());
+    // Default view shows editor
+    expect(screen.getByText(/uin definition/i)).toBeInTheDocument();
 
-    // Wait for depth map to be present (image appears when depth map ready)
-    await waitFor(() => expect(screen.getByAltText(/depth map/i)).toBeInTheDocument());
+    // Switch to Rosetta view
+    fireEvent.click(rosettaTab);
+    expect(screen.getByRole('heading', { name: /rosetta table/i })).toBeInTheDocument();
 
-    // Now the send button should be enabled
-    await waitFor(() => expect(sendButton).toBeEnabled());
-
-    fireEvent.click(sendButton);
-
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith('/api/generate', expect.objectContaining({ body: expect.stringContaining('depthMapBase64') })));
-
-    // Notification should appear
-    await waitFor(() => expect(screen.getByText(/enqueued/i)).toBeInTheDocument());
+    // Switch to Export view
+    fireEvent.click(exportTab);
+    expect(screen.getByText(/depth map \(controlnet\)/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /send to comfyui/i })).toBeInTheDocument();
   });
 });

@@ -1,5 +1,11 @@
-module.exports = {
-  toSVG: () => '<svg></svg>',
-  toDepthMap: () => Promise.resolve('data:image/png;base64,AAA'),
-  toPrompt: () => 'test prompt'
-};
+export function toSVG() {
+  return '<svg></svg>';
+}
+
+export function toDepthMap() {
+  return Promise.resolve('data:image/png;base64,AAA');
+}
+
+export function toPrompt() {
+  return 'test prompt';
+}

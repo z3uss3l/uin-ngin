@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Download, RefreshCw, Eye, Code, Grid, Layers, Copy } from 'lucide-react';
 import { validateUIN } from '@uin/core';
-
-// Try to require workspace package @uin/adapters; fall back to local stub when not installed
-let adapters;
-try {
-  // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-  adapters = require('@uin/adapters');
-} catch (e) {
-  // local stub used for tests and when package isn't installed
-  // eslint-disable-next-line global-require
-  adapters = require('./_adapters_stub');
-}
+import { toSVG, toPrompt, toDepthMap } from '@uin/adapters';
 
 const samples = {
   demo: `{
@@ -38,31 +28,29 @@ const UINHybridTool = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [notif, setNotif] = useState(null);
   const [selectedSample, setSelectedSample] = useState('demo');
-  // Added from root App: canvas-based fallback and ComfyUI status
   const [comfyStatus, setComfyStatus] = useState('');
-  const canvasRef = React.useRef(null);
 
   useEffect(() => {
-    try {
-      const parsed = JSON.parse(uinJSON);
-      validateUIN(parsed);
-      setParseError('');
-      setSvgOutput(adapters.toSVG(parsed, { validate: false }));
-      setPromptOutput(adapters.toPrompt(parsed, { validate: false }));
-      (async () => {
-        try {
-          const dataURL = await adapters.toDepthMap(parsed, { validate: false });
-          setDepthMapDataURL(dataURL);
-        } catch (e) {
-          setDepthMapDataURL('');
-        }
-      })();
-    } catch (e) {
-      setParseError(e.message);
-      setSvgOutput('');
-      setPromptOutput('');
-      setDepthMapDataURL('');
-    }
+    (async () => {
+      try {
+        const parsed = JSON.parse(uinJSON);
+        validateUIN(parsed);
+        setParseError('');
+
+        const svg = toSVG(parsed, { validate: false });
+        const prompt = toPrompt(parsed, { validate: false });
+        const depth = await toDepthMap(parsed, { validate: false });
+
+        setSvgOutput(svg);
+        setPromptOutput(prompt);
+        setDepthMapDataURL(typeof depth === 'string' ? depth : '');
+      } catch (e) {
+        setParseError(e.message);
+        setSvgOutput('');
+        setPromptOutput('');
+        setDepthMapDataURL('');
+      }
+    })();
   }, [uinJSON]);
 
   const downloadSVG = () => {
@@ -75,65 +63,17 @@ const UINHybridTool = () => {
     URL.revokeObjectURL(url);
   };
 
-  // download uses existing depth map or falls back to on-the-fly generation
-  const generateDepthMapFallback = () => {
-    const canvas = canvasRef.current || document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const width = 1024;
-    const height = 1024;
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, width, height);
-
-    try {
-      const parsed = JSON.parse(uinJSON);
-      const bounds = parsed.canvas?.bounds || {x: [-10,10], y: [-10,10], z: [-5,5]};
-      const xRange = bounds.x[1] - bounds.x[0];
-      const yRange = bounds.y[1] - bounds.y[0];
-      const zRange = bounds.z[1] - bounds.z[0];
-
-      const worldToScreen = (wx, wy, wz) => {
-        const sx = ((wx - bounds.x[0]) / xRange) * width;
-        const sy = height - ((wy - bounds.y[0]) / yRange) * height;
-        const depth = 255 - Math.max(0, Math.min(255, ((wz - bounds.z[0]) / zRange) * 255));
-        return [sx, sy, depth];
-      };
-
-      parsed.objects?.forEach(obj => {
-        const pos = obj.position || {x: 0, y: 0, z: 0};
-        const h = obj.measurements?.height?.value || 1.68;
-        const scale = (h / yRange) * height;
-        const [sx, sy, depth] = worldToScreen(pos.x, pos.y, pos.z);
-        ctx.fillStyle = `rgb(${depth},${depth},${depth})`;
-
-        if (obj.type === 'human') {
-          ctx.fillRect(sx - scale*0.1, sy - scale, scale*0.2, scale);
-        } else if (obj.type === 'tree') {
-          ctx.fillRect(sx - scale*0.05, sy - scale*0.3, scale*0.1, scale*0.3);
-          ctx.beginPath(); ctx.arc(sx, sy - scale*0.3, scale*0.15, 0, Math.PI * 2); ctx.fill();
-        } else if (obj.type === 'car') {
-          ctx.fillRect(sx - scale*0.6, sy - scale*0.5, scale*1.2, scale*0.5);
-        } else if (obj.type === 'building') {
-          ctx.fillRect(sx - scale*0.4, sy - scale, scale*0.8, scale);
-        }
-      });
-
-      return canvas.toDataURL('image/png');
-    } catch (e) {
-      return null;
-    }
-  };
-
   const downloadDepthMap = () => {
-    const dataUrl = depthMapDataURL || generateDepthMapFallback();
-    if (dataUrl) {
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = 'uin_depth_map.png';
-      a.click();
+    if (!depthMapDataURL) {
+      setNotif({ type: 'error', message: 'No depth map available yet' });
+      setTimeout(() => setNotif(null), 2500);
+      return;
     }
+
+    const a = document.createElement('a');
+    a.href = depthMapDataURL;
+    a.download = 'uin_depth_map.png';
+    a.click();
   };
 
   const copyPrompt = () => {
@@ -145,14 +85,17 @@ const UINHybridTool = () => {
   // One-click ComfyUI generation (local bridge)
   const generateInComfyUI = async () => {
     try {
+      if (!depthMapDataURL) {
+        setComfyStatus('❌ No depth map available yet');
+        return;
+      }
+
       setComfyStatus('⏳ Generating...');
-      // ensure we have a depth map
-      const depthMap = depthMapDataURL || generateDepthMapFallback();
 
       const response = await fetch('http://localhost:3001/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptOutput, depthMapBase64: depthMap, workflow: {} })
+        body: JSON.stringify({ prompt: promptOutput, depthMapBase64: depthMapDataURL, workflow: {} })
       });
 
       const result = await response.json();
@@ -358,28 +301,11 @@ const UINHybridTool = () => {
                 <button onClick={generateInComfyUI} className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm">Generate in ComfyUI</button>
               </div>
 
-              {/* offscreen canvas used by fallback generator */}
-              <canvas ref={canvasRef} style={{display: 'none'}} />
-
               {comfyStatus && <div className="mt-3 text-sm text-gray-300">{comfyStatus}</div> }
-            </div>
-
-            <div className="bg-gray-800 rounded-lg p-4">
-              <h2 className="text-xl font-semibold mb-4">CLI Usage</h2>
-              <pre className="bg-gray-900 p-3 rounded text-xs overflow-auto text-green-400">{`# Render to SVG
-uin render scene.json -o output.svg
-
-# Generate depth map
-uin depth scene.json -o depth.png
-
-# Generate prompt
-uin prompt scene.json
-
-# Generate ComfyUI workflow
-uin comfyui scene.json -o workflow.json`}</pre>
             </div>
           </div>
         )}
+
       </div>
 
       <div className="bg-gray-800 border-t border-gray-700 p-3 text-center text-sm text-gray-400">UIN Engine v0.3 | Powered by @uin/core + @uin/adapters</div>
