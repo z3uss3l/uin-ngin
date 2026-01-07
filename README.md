@@ -1,4 +1,6 @@
 # uin-ngin
+![uin logo](https://github.com/z3uss3l/uin-universal-image-notation/blob/main/uin_logo.png)
+
 *can you imagine?*
 
 Universal Image Notation Engine (uin-ngin) v0.7 – der Motor für Spezifikation, Ausführung und Monitoring.  
