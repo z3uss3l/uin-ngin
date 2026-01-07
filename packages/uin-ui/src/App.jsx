@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Download, RefreshCw, Eye, Code, Grid, Layers, Copy } from 'lucide-react';
 import { validateUIN } from '@uin/core';
 import { toSVG, toPrompt, toDepthMap } from '@uin/adapters';
+import CanvasEditor from './CanvasEditor';
 
 const samples = {
   demo: `{
@@ -222,9 +223,9 @@ const UINHybridTool = () => {
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
         {activeTab === 'editor' && (
-          <div className="grid grid-cols-2 gap-6 h-full">
+          <div className="grid grid-cols-3 gap-6 h-full">
             {/* Left: JSON Editor */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 col-span-1">
               <div className="bg-gray-800 rounded-lg p-4 flex-1 flex flex-col">
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-lg font-semibold">UIN Definition</h2>
@@ -235,8 +236,13 @@ const UINHybridTool = () => {
               </div>
             </div>
 
+            {/* Middle: Canvas Editor */}
+            <div className="flex flex-col gap-4 col-span-1">
+              <CanvasEditor uinJSON={uinJSON} onChange={setUinJSON} />
+            </div>
+
             {/* Right: Outputs */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 col-span-1">
               {/* SVG Preview */}
               <div className="bg-gray-800 rounded-lg p-4">
                 <div className="flex justify-between items-center mb-3">
