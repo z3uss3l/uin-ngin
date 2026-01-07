@@ -63,6 +63,11 @@ export function toNegativePrompt(options = {}) {
  * Describe a single object for prompt
  */
 function describeObject(obj) {
+  // If UI/catalog already provided a good natural-language description, prefer that
+  if (obj.description) {
+    return obj.description;
+  }
+
   const parts = [];
   
   switch (obj.type) {
