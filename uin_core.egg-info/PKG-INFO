@@ -2,7 +2,6 @@ Metadata-Version: 2.4
 Name: uin-core
 Version: 1.0.0
 Summary: Universal Image Notation – Core Engine
-Author-email: Your Name <you@example.com>
 License: MIT License
         
         Copyright (c) 2025 N0Nzense
@@ -33,13 +32,9 @@ Requires-Dist: opencv-python>=4.8.0
 Requires-Dist: pillow>=10.0.0
 Requires-Dist: numpy>=1.24.0
 Requires-Dist: jsonschema>=4.0
-Requires-Dist: fastapi>=0.104.0
-Requires-Dist: uvicorn>=0.24.0
+Requires-Dist: fastapi>=0.110.0
+Requires-Dist: uvicorn>=0.27.0
 Requires-Dist: mcp>=0.1.0
-Provides-Extra: dev
-Requires-Dist: pytest>=7.0; extra == "dev"
-Requires-Dist: requests>=2.30; extra == "dev"
-Requires-Dist: httpx>=0.28; extra == "dev"
 Dynamic: license-file
 
 # uin-ngin

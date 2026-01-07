@@ -8,3 +8,4 @@ src/uin_core.egg-info/entry_points.txt
 src/uin_core.egg-info/requires.txt
 src/uin_core.egg-info/top_level.txt
 tests/test_benchmark.py
+tests/test_schema_v08.py
