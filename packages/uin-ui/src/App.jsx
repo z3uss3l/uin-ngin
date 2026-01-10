@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Download, RefreshCw, Eye, Code, Grid, Layers, Copy } from 'lucide-react';
+import { Download, RefreshCw, Eye, Code, Grid, Layers, Copy, Upload, Image as ImageIcon } from 'lucide-react';
 import { validateUIN } from '@uin/core';
 import { toSVG, toPrompt, toDepthMap } from '@uin/adapters';
-import CanvasEditor from './CanvasEditor';
+import CanvasEditorFixed from './CanvasEditorFixed';
 
 const samples = {
   demo: `{
@@ -30,6 +30,11 @@ const UINHybridTool = () => {
   const [notif, setNotif] = useState(null);
   const [selectedSample, setSelectedSample] = useState('demo');
   const [comfyStatus, setComfyStatus] = useState('');
+  
+  // Image upload states
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -133,6 +138,67 @@ const UINHybridTool = () => {
     setUinJSON(samples[s]);
   };
 
+  // Image upload functions
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedImage(file);
+      setAnalysisResult(null);
+    }
+  };
+
+  const analyzeImage = async () => {
+    if (!uploadedImage) {
+      setNotif({ type: 'error', message: 'Please select an image first' });
+      setTimeout(() => setNotif(null), 2500);
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setNotif({ type: 'info', message: 'Analyzing image...' });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', uploadedImage);
+
+      console.log('Sending request to: http://localhost:8001/api/import');
+      const response = await fetch('http://localhost:8001/api/import', {
+        method: 'POST',
+        body: formData,
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log('Success response:', result);
+      
+      if (result.success) {
+        setAnalysisResult(result);
+        setUinJSON(JSON.stringify(result.uin, null, 2));
+        setNotif({ type: 'success', message: 'Image analyzed successfully!' });
+        
+        // Update prompt output from the analysis result
+        const prompt = toPrompt(result.uin, { validate: false });
+        setPromptOutput(prompt);
+      } else {
+        throw new Error(result.error || 'Analysis failed');
+      }
+    } catch (error) {
+      console.error('Analysis error:', error);
+      setNotif({ type: 'error', message: `Analysis failed: ${error.message}` });
+    } finally {
+      setIsAnalyzing(false);
+      setTimeout(() => setNotif(null), 4000);
+    }
+  };
+
   // Rosetta table content from root App
   const rosettaData = [
     {
@@ -207,6 +273,7 @@ const UINHybridTool = () => {
       <div className="flex bg-gray-800 border-b border-gray-700">
         {[
           { id: 'editor', label: 'Editor + Preview', icon: Code },
+          { id: 'upload', label: 'Image Upload', icon: Upload },
           { id: 'rosetta', label: 'Rosetta Table', icon: Grid },
           { id: 'export', label: 'Export', icon: Layers }
         ].map(tab => (
@@ -238,7 +305,7 @@ const UINHybridTool = () => {
 
             {/* Middle: Canvas Editor */}
             <div className="flex flex-col gap-4 col-span-1">
-              <CanvasEditor uinJSON={uinJSON} onChange={setUinJSON} />
+              <CanvasEditorFixed uinJSON={uinJSON} onChange={setUinJSON} />
             </div>
 
             {/* Right: Outputs */}
@@ -259,6 +326,119 @@ const UINHybridTool = () => {
                 <button onClick={copyPrompt} className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-sm transition flex items-center gap-2"><Copy size={14} />Copy</button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'upload' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <ImageIcon size={24} />
+                Image Analysis for UIN Generation
+              </h2>
+              
+              {/* Upload Section */}
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
+                  <Upload size={48} className="mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-semibold mb-2">Upload Image for Analysis</h3>
+                  <p className="text-gray-400 mb-4">Select an image to extract features and generate UIN notation</p>
+                  
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded cursor-pointer transition"
+                  >
+                    Choose Image
+                  </label>
+                  
+                  {uploadedImage && (
+                    <div className="mt-4">
+                      <p className="text-green-400 mb-2">✓ Selected: {uploadedImage.name}</p>
+                      <img
+                        src={URL.createObjectURL(uploadedImage)}
+                        alt="Preview"
+                        className="max-w-xs mx-auto rounded border border-gray-600"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Analyze Button */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={analyzeImage}
+                    disabled={!uploadedImage || isAnalyzing}
+                    className="px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded font-semibold transition flex items-center gap-2"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <RefreshCw size={18} className="animate-spin" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon size={18} />
+                        Analyze Image
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Analysis Results */}
+            {analysisResult && (
+              <div className="bg-gray-800 rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-4">Analysis Results</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Features Extracted */}
+                  <div>
+                    <h4 className="font-semibold mb-3 text-blue-400">Enhanced Features Extracted</h4>
+                    <div className="bg-gray-900 rounded p-4 space-y-2">
+                      <div>📐 Edge Points: {analysisResult.features_extracted.edges}</div>
+                      <div>🎯 Contours: {analysisResult.features_extracted.contours}</div>
+                      <div>🎨 Color Samples: {analysisResult.features_extracted.colors}</div>
+                      <div>📊 Edge Density: {analysisResult.features_extracted.edge_density?.toFixed(3) || 'N/A'}</div>
+                      <div>🔍 Complexity: {analysisResult.features_extracted.complexity || 'N/A'}</div>
+                    </div>
+                  </div>
+
+                  {/* Generated UIN */}
+                  <div>
+                    <h4 className="font-semibold mb-3 text-green-400">Generated UIN</h4>
+                    <div className="bg-gray-900 rounded p-4">
+                      <pre className="text-xs text-green-300 overflow-x-auto">
+                        {JSON.stringify(analysisResult.uin, null, 2)}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="mt-6 flex gap-3">
+                  <button
+                    onClick={() => setActiveTab('editor')}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded transition"
+                  >
+                    Edit in Editor
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('export')}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition"
+                  >
+                    Export Results
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

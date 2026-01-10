@@ -35,12 +35,16 @@ Requires-Dist: jsonschema>=4.0
 Requires-Dist: fastapi>=0.110.0
 Requires-Dist: uvicorn>=0.27.0
 Requires-Dist: mcp>=0.1.0
+Requires-Dist: requests>=2.32.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: requests>=2.32.0; extra == "dev"
 Dynamic: license-file
 
 # uin-ngin
 *can you imagine?*
 
-Universal Image Notation Engine (uin-ngin) v0.7 – der Motor für Spezifikation, Ausführung und Monitoring.  
+Universal Image Notation Engine (UIN v0.7) – der Motor für Spezifikation, Ausführung und Monitoring.  
 Während [UIN](https://github.com/z3uss3l/uin-universal-image-notation) die Sprache liefert, ist uin-ngin die Engine, die diese Sprache **ausführt, testet und sichtbar macht**.
 
 ---

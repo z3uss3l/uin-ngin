@@ -1,0 +1,15 @@
+git checkout feature/ui-polish-tests
+git pull
+
+# Python
+python -m pytest -q
+
+# Server
+npm install --prefix server
+npm test --prefix server
+npm start --prefix server
+
+# UI
+npm install --prefix packages/uin-ui
+npm test --prefix packages/uin-ui
+npm run build --prefix packages/uin-ui
