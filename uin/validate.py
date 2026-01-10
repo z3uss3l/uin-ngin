@@ -1,8 +1,4 @@
-# path: uin/core/validate.py
-from uin.core.schema import UINDocument
-from uin.core.errors import ValidationError
+# compatibility shim: import validate from uin.core.validate
+from uin.core.validate import validate
 
-
-def validate(doc: UINDocument) -> None:
-    if not doc.shapes:
-        raise ValidationError("UIN document contains no shapes")
+__all__ = ["validate"]

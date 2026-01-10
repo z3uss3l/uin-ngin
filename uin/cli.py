@@ -38,3 +38,7 @@ def main() -> None:
     elif args.command == "export":
         ctx = step_import(ctx, raw)
         write_stdout(step_export(ctx))
+
+
+if __name__ == "__main__":
+    main()

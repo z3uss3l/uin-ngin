@@ -1,0 +1,2 @@
+[console_scripts]
+uin = uin.cli:main

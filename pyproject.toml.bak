@@ -1,0 +1,29 @@
+[project]
+name = "uin-core"
+version = "1.0.0"
+description = "Universal Image Notation – Core Engine"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+
+dependencies = [
+  "pydantic>=2.5",
+  "opencv-python>=4.8.0",
+  "pillow>=10.0.0",
+  "numpy>=1.24.0",
+  "jsonschema>=4.0",
+  "fastapi>=0.110.0",
+  "uvicorn>=0.27.0",
+  "mcp>=0.1.0",
+]
+
+[project.scripts]
+uin = "uin.cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["uin*"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

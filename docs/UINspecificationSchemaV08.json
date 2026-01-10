@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UIN v0.8 (minimal)",
+  "type": "object",
+  "required": ["version", "canvas", "objects"],
+  "properties": {
+    "version": { "type": "string", "const": "0.8" },
+    "canvas": { "type": "object" },
+    "objects": { "type": "array" }
+  },
+  "additionalProperties": false
+}
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "author": { "type": "string" },
+        "created": { "type": "string", "format": "date-time" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "document_hash": { "type": "string", "pattern": "^sha256:[0-9a-fA-F]{64}$" },
+        "conformance": {
+          "type": "string",
+          "enum": ["UIN-Core-0.8", "UIN-Core+MCP-0.8", "UIN-Core+Workflow-0.8", "UIN-Full-0.8"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "canvas": {
+      "type": "object",
+      "required": ["aspect_ratio", "bounds"],
+      "properties": {
+        "aspect_ratio": { "type": "string", "pattern": "^[0-9]+:[0-9]+$" },
+        "bounds": {
+          "type": "object",
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+            "y": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+            "z": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 }
+          },
+          "additionalProperties": false
+        },
+        "coordinate_system": {
+          "type": "string",
+          "enum": ["world_space_meters", "normalized_0_1", "pixel_absolute"],
+          "default": "world_space_meters"
+        }
+      },
+      "additionalProperties": false
+    },
+    "global": {
+      "type": "object",
+      "properties": {
+        "lighting": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["studio", "golden_hour", "overcast", "night"] },
+            "intensity": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "style": {
+          "type": "object",
+          "properties": {
+            "genre": { "type": "string", "enum": ["photorealistic", "painting", "cyberpunk", "anime"] }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "position"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" },
+          "type": { "type": "string" },
+          "subtype": { "type": "string" },
+          "position": {
+            "type": "object",
+            "required": ["x", "y", "z"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "z": { "type": "number" },
+              "anchor": { "type": "string", "enum": ["center", "feet", "head", "top_left"], "default": "center" }
+            },
+            "additionalProperties": false
+          },
+          "rotation": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "number", "minimum": -180, "maximum": 180 },
+              "y": { "type": "number", "minimum": -180, "maximum": 180 },
+              "z": { "type": "number", "minimum": -180, "maximum": 180 }
+            },
+            "additionalProperties": false
+          },
+          "measurements": { "type": "object", "additionalProperties": { "$ref": "#/definitions/measurement" } },
+          "features": {
+            "type": "object",
+            "properties": { "color": { "$ref": "#/definitions/color" }, "material": { "type": "string" }, "texture": { "type": "string" } },
+            "additionalProperties": false
+          },
+          "forensic_attributes": {
+            "type": "object",
+            "properties": {
+              "face_shape": { "type": "string", "enum": ["oval", "round", "square", "heart", "diamond", "oblong"] },
+              "interpupillary_distance_mm": { "type": "number", "minimum": 50, "maximum": 80 },
+              "unique_marks": { "type": "array", "items": { "type": "object", "properties": { "type": { "type": "string" }, "position": { "type": "string" }, "size_mm": { "type": "number" } }, "additionalProperties": false } }
+            },
+            "additionalProperties": false
+          },
+          "avatar_attributes": {
+            "type": "object",
+            "properties": {
+              "body_type": { "type": "string", "enum": ["ectomorph", "mesomorph", "endomorph"] },
+              "facial_features": { "type": "object", "properties": { "eye_size": { "type": "number", "minimum": 0, "maximum": 1 }, "jaw_strength": { "type": "number", "minimum": 0, "maximum": 1 } }, "additionalProperties": false },
+              "cosmetic_modifications": { "type": "array", "items": { "type": "object", "properties": { "type": { "type": "string", "enum": ["cyberware", "tattoo", "implant"] }, "location": { "type": "string" }, "glowing": { "type": "boolean" } }, "additionalProperties": false } }
+            },
+            "additionalProperties": false
+          },
+          "biometric_data": {
+            "type": "object",
+            "properties": {
+              "facial_landmarks": { "type": "object", "properties": { "pupillary_distance_mm": { "type": "number" }, "bizygomatic_width_mm": { "type": "number" } }, "additionalProperties": false },
+              "demographic_estimates": { "type": "object", "properties": { "biological_sex": { "type": "string", "enum": ["male", "female", "unknown"] }, "age_estimate": { "type": "object" } }, "additionalProperties": false },
+              "privacy_flags": { "type": "object", "properties": { "encryption_required": { "type": "boolean", "default": true } }, "additionalProperties": false }
+            },
+            "additionalProperties": false
+          },
+          "state": { "type": "object", "properties": { "expression": { "type": "string", "enum": ["neutral", "happy", "sad", "angry"] }, "action": { "type": "string" } }, "additionalProperties": false }
+        },
+        "additionalProperties": false
+      }
+    },
+    "relations": { "type": "array", "items": { "type": "object", "required": ["type", "from", "to"], "properties": { "type": { "type": "string", "enum": ["distance", "angle", "relative_position"] }, "from": { "type": "string" }, "to": { "type": "string" }, "value": { "type": ["number", "string"] }, "unit": { "type": "string" } }, "additionalProperties": false } },
+    "edge_reference": {
+      "type": "object",
+      "properties": {
+        "use_as_control": { "type": "boolean", "default": true },
+        "file_name": { "type": "string" },
+        "canny_thresholds": { "type": "object", "properties": { "low": { "type": "integer", "minimum": 0, "maximum": 255, "default": 100 }, "high": { "type": "integer", "minimum": 0, "maximum": 255, "default": 200 } }, "additionalProperties": false }
+      },
+      "additionalProperties": false
+    },
+    "cross_domain_mappings": { "type": "object", "properties": { "gaming_standards": { "type": "object", "properties": { "vrm_compatible": { "type": "boolean" }, "unreal_metahuman": { "type": "boolean" } }, "additionalProperties": false }, "biometric_standards": { "type": "object", "properties": { "iso_19794_5": { "type": "boolean" } }, "additionalProperties": false } }, "additionalProperties": false },
+    "compatibility": { "type": "object", "properties": { "ai_models": { "type": "array", "items": { "type": "string" }, "default": ["stable-diffusion", "dall-e", "midjourney", "flux"] } }, "additionalProperties": false },
+    "mcp_contracts": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string", "pattern": "^0\\.8(\\.[0-9]+)?$" },
+        "contexts": { "type": "array", "items": { "type": "object", "required": ["id", "capabilities"], "properties": { "id": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" }, "capabilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 }, "constraints": { "type": "object", "properties": { "max_runtime_ms": { "type": "integer", "minimum": 1 }, "max_memory_mb": { "type": "integer", "minimum": 1 }, "max_tokens": { "type": "integer", "minimum": 1 }, "precision_mode": { "type": "string", "enum": ["fast", "balanced", "accurate"] } }, "additionalProperties": false }, "policy": { "type": "object", "properties": { "determinism_required": { "type": "boolean", "default": false }, "logging_level": { "type": "string", "enum": ["none", "error", "info", "debug"], "default": "info" } }, "additionalProperties": false } }, "additionalProperties": false } },
+      "additionalProperties": false
+    },
+    "workflow_hooks": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string", "pattern": "^0\\.8(\\.[0-9]+)?$" },
+        "triggers": { "type": "array", "items": { "type": "object", "required": ["id", "type"], "properties": { "id": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" }, "type": { "type": "string", "enum": ["on_validate", "on_render_start", "on_render_complete", "on_error"] }, "conditions": { "type": "object" } }, "additionalProperties": false } },
+        "nodes": { "type": "array", "items": { "type": "object", "required": ["id", "kind", "io"], "properties": { "id": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" }, "kind": { "type": "string", "enum": ["http_request", "webhook", "storage_write", "model_infer", "custom"] }, "config": { "type": "object" }, "io": { "type": "object", "required": ["inputs", "outputs"], "properties": { "inputs": { "type": "array", "items": { "type": "object", "required": ["name", "type"], "properties": { "name": { "type": "string" }, "type": { "type": "string", "enum": ["json", "binary", "text"] }, "schema_ref": { "type": "string" } }, "additionalProperties": false } }, "outputs": { "type": "array", "items": { "type": "object", "required": ["name", "type"], "properties": { "name": { "type": "string" }, "type": { "type": "string", "enum": ["json", "binary", "text"] }, "schema_ref": { "type": "string" } }, "additionalProperties": false } } }, "additionalProperties": false }, "security": { "type": "object", "properties": { "requires_auth": { "type": "boolean", "default": true }, "auth_type": { "type": "string", "enum": ["api_key", "oauth2", "basic", "none"], "default": "api_key" }, "scopes": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false } }, "additionalProperties": false } },
+        "edges": { "type": "array", "items": { "type": "object", "required": ["from", "to"], "properties": { "from": { "type": "string" }, "to": { "type": "string" }, "condition": { "type": "string" } }, "additionalProperties": false } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

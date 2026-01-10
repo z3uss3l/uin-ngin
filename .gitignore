@@ -9,6 +9,19 @@
 
 # production
 /build
+packages/*/build
+
+# Python
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+
+# Cache
+.cache/
+*.cache
+packages/*/node_modules/.cache/
 
 # misc
 .DS_Store

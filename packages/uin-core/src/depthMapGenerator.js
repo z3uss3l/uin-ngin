@@ -1,7 +1,7 @@
 /**
  * Auto-detect environment and generate depth map
  */
-export function generateDepthPNG(parser) {
+export async function generateDepthPNG(parser) {
   // Browser environment
   if (typeof window !== 'undefined' && window.document) {
     const { generateDepthPNGBrowser } = await import('./depthMapGenerator.browser.js');

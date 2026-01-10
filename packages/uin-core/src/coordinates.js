@@ -14,6 +14,6 @@ export function normalizedToScreen(norm, viewport) {
   };
 }
 
-export function worldToScreen(point, bounds, viewport) {
+export function worldToScreenNormalized(point, bounds, viewport) {
   return normalizedToScreen(worldToNormalized(point, bounds), viewport);
 }

@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Run Python tests
+        run: pytest -q
+
+  node-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install server deps
+        run: |
+          cd server
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Install UI deps
+        run: |
+          cd packages/uin-ui
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Build UI
+        run: |
+          cd packages/uin-ui
+          npm run build
+      - name: Smoke test server
+        run: |
+          # start server in background and check health
+          cd server
+          node comfyui-bridge.js &
+          sleep 2
+          curl --fail http://127.0.0.1:3001/api/health
+
+      - name: GUI smoke test (static)
+        run: |
+          # ensure /gui demo is reachable
+          curl --fail http://127.0.0.1:3001/gui

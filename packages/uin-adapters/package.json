@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./source/index.js"
   },
   "dependencies": {
-    "@uin/core": "workspace:*"
+    "@uin/core": "file:../uin-core"
   }
 }

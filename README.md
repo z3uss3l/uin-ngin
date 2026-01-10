@@ -3,7 +3,7 @@
 
 *can you imagine?*
 
-Universal Image Notation Engine (uin-ngin) v0.7 – der Motor für Spezifikation, Ausführung und Monitoring.  
+Universal Image Notation Engine (UIN v0.7) – der Motor für Spezifikation, Ausführung und Monitoring.  
 Während [UIN](https://github.com/z3uss3l/uin-universal-image-notation) die Sprache liefert, ist uin-ngin die Engine, die diese Sprache **ausführt, testet und sichtbar macht**.
 
 ---
@@ -68,3 +68,57 @@ Während [UIN](https://github.com/z3uss3l/uin-universal-image-notation) die Spra
 - **GUI**: Dashboard mit REST-API.  
 - **Monitoring**: Metriken, Benchmarks, Prometheus-Exporter.  
 - **Standards**: ISO/IEC 19794‑5 ab v0.7.
+
+---
+
+## Getting Started 🔧
+
+These steps will get the project running locally.
+
+### Python (Backend / CLI / Tests)
+
+1. Create a Python 3.11 venv and activate it.
+
+2. Install runtime and developer dependencies:
+
+```bash
+python -m pip install --upgrade pip
+pip install -e .[dev]
+```
+
+3. Run tests:
+
+```bash
+pytest -q
+```
+
+4. Run CLI (example):
+
+```bash
+python -m uin.cli normalize < input.json > output.json
+```
+
+### Node (Bridge Server & UI)
+
+The repo contains a simple bridge server (`server/comfyui-bridge.js`) and a React UI under `packages/uin-ui`.
+
+1. Install server deps:
+
+```bash
+cd server
+npm ci
+npm start
+```
+
+2. Build the UI (for production):
+
+```bash
+cd packages/uin-ui
+npm ci
+npm run build
+```
+
+The repository includes GitHub Actions workflows to build the UI, deploy to Pages, and run CI checks (`.github/workflows/ci.yml`, `.github/workflows/deploy.yml`).
+
+---
+

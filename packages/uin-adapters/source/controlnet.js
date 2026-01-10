@@ -18,40 +18,6 @@ export async function toDepthMap(input, options = {}) {
 }
 
 /**
- * Save depth map to file (Node.js only)
- */
-export async function saveDepthMap(input, outputPath, options = {}) {
-  const depthData = await toDepthMap(input, options);
-  
-  // Node.js environment
-  if (Buffer.isBuffer(depthData)) {
-    const fs = await import('fs/promises');
-    await fs.writeFile(outputPath, depthData);
-    return outputPath;
-  }
-  
-  // Browser environment - download via blob
-  if (typeof window !== 'undefined') {
-    const base64Data = depthData.split(',')[1];
-    const blob = new Blob(
-      [Uint8Array.from(atob(base64Data), c => c.charCodeAt(0))],
-      { type: 'image/png' }
-    );
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = outputPath;
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    return outputPath;
-  }
-  
-  throw new Error('Cannot save file in this environment');
-}
-
-/**
  * Generate ComfyUI workflow with depth map
  */
 export async function toComfyUIWorkflow(input, options = {}) {

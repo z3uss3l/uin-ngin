@@ -1,0 +1,8 @@
+{
+    "cSpell.words": [
+        "pydantic",
+        "setuptools"
+    ],
+    "chat.agent.maxRequests": 80,
+    "vscode-edge-devtools.browserFlavor": "Dev"
+}

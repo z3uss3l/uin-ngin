@@ -23,24 +23,26 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
+        working-directory: packages/uin-ui
         
       - name: Build
         run: npm run build
+        working-directory: packages/uin-ui
         env:
           PUBLIC_URL: /uin-ngin
         
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: './build'
-  
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+        - name: Upload artifact
+          uses: actions/upload-pages-artifact@v2
+          with:
+            path: './packages/uin-ui/build'
+    
+    deploy:
+      needs: build
+      runs-on: ubuntu-latest
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v2
