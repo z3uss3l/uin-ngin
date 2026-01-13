@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>UIN Standard v0.1 — One-Page Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 0;
+    padding: 32px;
+    background: #0f172a;
+    color: #e5e7eb;
+    line-height: 1.6;
+  }
+  h1, h2, h3 {
+    color: #38bdf8;
+    margin-top: 2.5rem;
+  }
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.2rem; }
+  pre {
+    background: #020617;
+    border: 1px solid #1e293b;
+    padding: 16px;
+    overflow-x: auto;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+  code { color: #a5f3fc; }
+  ul { margin-left: 1.2rem; }
+  li { margin: 0.4rem 0; }
+  .box {
+    border: 1px solid #334155;
+    background: #020617;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .ok { color: #4ade80; }
+  .no { color: #f87171; }
+  footer {
+    margin-top: 4rem;
+    padding-top: 1rem;
+    border-top: 1px solid #1e293b;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+<img src="UIN_logo.png" align="center"></img>
+<h1>UIN — Universal Image Notation<br/>Standard v0.1 (Frozen)</h1>
+
+<p>
+<strong>Status:</strong> <span class="ok">FROZEN (Core)</span><br/>
+<strong>Ziel:</strong> Deterministische, KI-freie Bild- & Szenenbeschreibung mit optionalen Erweiterungen.
+</p>
+
+<hr/>
+
+<h2>A — Structural Profile (Core)</h2>
+
+<div class="box">
+<ul>
+  <li>JSON-basiert, schema-validierbar</li>
+  <li>Deterministisch, reproduzierbar</li>
+  <li>Keine implizite Semantik</li>
+  <li>Kein KI-Zwang</li>
+</ul>
+
+<p><strong>Core-Domänen:</strong></p>
+<ul>
+  <li><code>geometric_2d</code></li>
+  <li><code>geometric_3d</code></li>
+  <li><code>forensic</code></li>
+  <li><code>semantic</code> (beschreibend, nicht generativ)</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>B — Normatives JSON Schema (v0.1)</h2>
+
+<pre><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uin-standard.org/schema/uin-core-0.1.json",
+  "type": "object",
+  "required": ["version", "domain", "canvas", "objects"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": "0.1" },
+    "domain": {
+      "type": "string",
+      "enum": ["geometric_2d", "geometric_3d", "forensic", "semantic"]
+    },
+    "canvas": {
+      "type": "object",
+      "required": ["width", "height", "origin"],
+      "additionalProperties": false,
+      "properties": {
+        "width": { "type": "number", "minimum": 1 },
+        "height": { "type": "number", "minimum": 1 },
+        "origin": { "enum": ["center", "top_left"] }
+      }
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "position"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "position": {
+            "type": "object",
+            "required": ["x", "y"],
+            "additionalProperties": false,
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "z": { "type": "number", "default": 0 },
+              "anchor": { "enum": ["center", "feet", "top_left"] }
+            }
+          },
+          "dimensions": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "width": { "type": "number" },
+              "height": { "type": "number" },
+              "depth": { "type": "number" }
+            }
+          },
+          "attributes": { "type": "object" },
+          "relations": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}</code></pre>
+
+<hr/>
+
+<h2>C — UIN Inspector (Reference Tool)</h2>
+
+<h3>Pflicht-Checkliste (MVP)</h3>
+
+<div class="box">
+<ul>
+  <li class="ok">JSON Schema Validation (hart, blocking)</li>
+  <li class="ok">2D SVG-Rendering (deterministisch)</li>
+  <li class="ok">Objekt- & Relationsliste</li>
+  <li class="ok">Koordinaten- & Anchor-Visualisierung</li>
+  <li class="ok">Fehleranzeige schema-nah</li>
+</ul>
+</div>
+
+<h3>Explizit ausgeschlossen</h3>
+
+<div class="box">
+<ul>
+  <li class="no">KI-Interpretation</li>
+  <li class="no">Prompt-Optimierung</li>
+  <li class="no">Auto-Fixes</li>
+  <li class="no">Hidden Defaults</li>
+</ul>
+</div>
+
+<h3>Technischer Minimal-Stack</h3>
+
+<div class="box">
+<ul>
+  <li>JSON Schema Validator (AJV o.ä.)</li>
+  <li>SVG / Canvas</li>
+  <li>Static HTML oder lokale App</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>D — Plugin-Profile (vollständig)</h2>
+
+<h3>D.1 Plugin: semantic-hints</h3>
+
+<div class="box">
+<p><strong>Status:</strong> optional, nicht-normativ</p>
+
+<pre><code>{
+  "extensions": {
+    "semantic-hints": {
+      "prompt_tags": ["wide angle", "cinematic lighting"],
+      "style_bias": "photorealistic",
+      "llm_safe": true
+    }
+  }
+}</code></pre>
+
+<ul>
+  <li>Darf ignoriert werden</li>
+  <li>Darf entfernt werden</li>
+  <li>Beeinflusst nie Core-Validität</li>
+</ul>
+</div>
+
+<h3>D.2 Plugin: forensic-profile</h3>
+
+<div class="box">
+<pre><code>{
+  "extensions": {
+    "forensic-profile": {
+      "face_shape": "oval",
+      "eye_distance": "wide",
+      "nose_type": "roman",
+      "special_marks": ["scar_left_eyebrow"]
+    }
+  }
+}</code></pre>
+
+<ul>
+  <li>Mapping-fähig zu FACES / Polizeisystemen</li>
+  <li>Keine biometrische Identifikation</li>
+  <li>Deskriptiv, nicht eindeutig</li>
+</ul>
+</div>
+
+<h3>D.3 Plugin: cv-observations</h3>
+
+<div class="box">
+<pre><code>{
+  "extensions": {
+    "cv-observations": {
+      "source": "opencv+yolo",
+      "objects_detected": ["person", "chair", "table"],
+      "confidence": 0.87
+    }
+  }
+}</code></pre>
+
+<ul>
+  <li>Erlaubt klassische CV-Pipelines</li>
+  <li>Kein Modell vorgeschrieben</li>
+  <li>Rein annotativ</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>Freeze-Zusammenfassung</h2>
+
+<div class="box">
+<ul>
+  <li><strong>Core:</strong> klein, hart, stabil</li>
+  <li><strong>Inspector:</strong> prüfend, nicht interpretierend</li>
+  <li><strong>Plugins:</strong> offen, entfernbar, nicht bindend</li>
+</ul>
+</div>
+
+<footer>
+UIN Standard v0.1 — One-Page Reference<br/>
+Designed for classical computation, long-term stability, and broad adoption.
+</footer>
+
+</body>
+</html>

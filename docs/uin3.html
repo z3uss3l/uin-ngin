@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>UIN — System Context & Differentiation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #020617;
+    color: #e5e7eb;
+    margin: 0;
+    padding: 40px;
+    line-height: 1.6;
+  }
+  h1, h2, h3 {
+    color: #38bdf8;
+    margin-top: 2.5rem;
+  }
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.1rem; }
+  p, ul {
+    max-width: 900px;
+  }
+  ul { margin-left: 1.2rem; }
+  li { margin: 0.4rem 0; }
+  .box {
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    background: #020617;
+    margin-top: 16px;
+  }
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+    max-width: 1000px;
+  }
+  .node {
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: #020617;
+    min-width: 180px;
+    text-align: center;
+  }
+  .arrow {
+    font-size: 1.5rem;
+    align-self: center;
+    color: #94a3b8;
+  }
+  table {
+    border-collapse: collapse;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 1000px;
+  }
+  th, td {
+    border: 1px solid #1e293b;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background: #020617;
+    color: #38bdf8;
+  }
+  .yes { color: #4ade80; }
+  .no { color: #f87171; }
+  footer {
+    margin-top: 4rem;
+    border-top: 1px solid #1e293b;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<h1>UIN — System Context & Differentiation</h1>
+<p>
+How UIN fits into existing pipelines — and why it is <em>not</em> a Scene Graph system.
+</p>
+
+<hr/>
+
+<h2>1. System Context: From Image to Systems</h2>
+
+<p>
+UIN is designed as a <strong>structural pivot format</strong> between heterogeneous systems.
+</p>
+
+<div class="flow">
+  <div class="node">Image / Video<br/>Sensor / File</div>
+  <div class="arrow">→</div>
+  <div class="node">Classical CV<br/>(OpenCV, YOLO, SAM)</div>
+  <div class="arrow">→</div>
+  <div class="node"><strong>UIN Core</strong><br/>Deterministic Structure</div>
+  <div class="arrow">→</div>
+  <div class="node">Consumers<br/>CAD · Simulation · KI · Docs</div>
+</div>
+
+<div class="box">
+<ul>
+  <li>CV systems <strong>observe</strong></li>
+  <li>UIN <strong>describes</strong></li>
+  <li>Downstream systems <strong>interpret</strong></li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>2. Why UIN is NOT a Scene Graph</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Aspect</th>
+  <th>Scene Graphs (SGG)</th>
+  <th>UIN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Generation</td>
+  <td>ML-based, probabilistic</td>
+  <td>Manual or algorithmic</td>
+</tr>
+<tr>
+  <td>Stability</td>
+  <td>Model-dependent</td>
+  <td>Schema-frozen</td>
+</tr>
+<tr>
+  <td>Semantics</td>
+  <td>Implicit / learned</td>
+  <td>Explicit / declared</td>
+</tr>
+<tr>
+  <td>Runtime</td>
+  <td>GPU / ML stack</td>
+  <td>Any CPU / embedded</td>
+</tr>
+<tr>
+  <td>Purpose</td>
+  <td>Understanding</td>
+  <td>Description</td>
+</tr>
+</tbody>
+</table>
+
+<hr/>
+
+<h2>3. Core Design Decision</h2>
+
+<div class="box">
+<p>
+<strong>UIN intentionally stops before interpretation.</strong>
+</p>
+<ul>
+  <li class="yes">Objects exist because they are declared</li>
+  <li class="yes">Relations exist because they are stated</li>
+  <li class="no">No inference, no guessing, no confidence scores</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>4. Role of AI in This Architecture</h2>
+
+<div class="box">
+<ul>
+  <li class="yes">AI can generate UIN</li>
+  <li class="yes">AI can consume UIN</li>
+  <li class="yes">AI can enrich UIN via plugins</li>
+  <li class="no">AI is never required for validity</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>5. Why This Matters</h2>
+
+<div class="box">
+<ul>
+  <li>Long-term archival & forensic use</li>
+  <li>Offline & sovereign systems</li>
+  <li>Interoperability across decades</li>
+  <li>No vendor or model lock-in</li>
+</ul>
+</div>
+
+<footer>
+UIN · Universal Image Notation<br/>
+Context & Differentiation · One-Page Reference
+</footer>
+
+</body>
+</html>
