@@ -1,0 +1,26 @@
+This project can use a local OpenCV.js build for fully offline edge detection.
+
+You downloaded `opencv.js` into the root `scripts/` directory:
+
+  scripts/opencv.js
+
+To enable it for the React UI:
+
+1. Copy the file into the public folder so it will be served by the dev server:
+
+   - From repo root (PowerShell):
+     - `Copy-Item -Path .\scripts\opencv.js -Destination .\packages\uin-ui\public\opencv.js -Force`
+
+2. Create or edit a `.env.local` file in `packages/uin-ui` (next to `package.json`) with:
+
+   REACT_APP_OPENCV_URL=/opencv.js
+   REACT_APP_API_BASE=http://localhost:8001
+   REACT_APP_BRIDGE_BASE=http://localhost:3001
+
+3. Restart the UI dev server:
+
+   - `cd packages/uin-ui`
+   - `npm start`
+
+The loader in `src/config.js` will then prefer `/opencv.js` and fall back to the CDN if needed.
+

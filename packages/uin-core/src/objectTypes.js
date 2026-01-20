@@ -9,6 +9,11 @@ export const OBJECT_TYPES = {
     features: ['hair', 'eyes', 'face', 'clothing'],
     required: ['position']
   },
+  human_group: {
+    defaultHeight: 1.7,
+    features: ['clothing'],
+    required: ['position']
+  },
   tree: {
     defaultHeight: 3.0,
     proportions: { trunk: 0.3, crown: 0.7 },
@@ -28,7 +33,6 @@ export const OBJECT_TYPES = {
     required: ['position']
   },
   region: {
-    description: 'Detected region from image analysis',
     required: ['position']
   }
 };
