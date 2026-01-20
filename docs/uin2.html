@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>UIN — Positioning & Scope</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #020617;
+    color: #e5e7eb;
+    margin: 0;
+    padding: 40px;
+    line-height: 1.6;
+  }
+  h1, h2, h3 {
+    color: #38bdf8;
+    margin-top: 2.5rem;
+  }
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.1rem; }
+  p { max-width: 900px; }
+  ul { max-width: 900px; margin-left: 1.2rem; }
+  li { margin: 0.4rem 0; }
+  .box {
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    background: #020617;
+    margin-top: 16px;
+  }
+  .yes { color: #4ade80; }
+  .no { color: #f87171; }
+  table {
+    border-collapse: collapse;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 1000px;
+  }
+  th, td {
+    border: 1px solid #1e293b;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background: #020617;
+    color: #38bdf8;
+  }
+  footer {
+    margin-top: 4rem;
+    border-top: 1px solid #1e293b;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<h1>UIN — Universal Image Notation</h1>
+<p>
+<strong>Positioning Document (Public)</strong><br/>
+Version 0.1 · Stable Core · Open Extension Model
+</p>
+
+<hr/>
+
+<h2>1. Was UIN ist</h2>
+
+<div class="box">
+<ul>
+  <li class="yes">Ein <strong>offener, deterministischer Standard</strong> zur Beschreibung von Bildern und Szenen</li>
+  <li class="yes">Maschinenlesbar, validierbar, langfristig stabil</li>
+  <li class="yes">Für klassische Rechner, Embedded-Systeme, Offline-Workflows</li>
+  <li class="yes">Unabhängig von KI, Modellen oder Cloud-Diensten</li>
+</ul>
+</div>
+
+<h2>2. Was UIN bewusst nicht ist</h2>
+
+<div class="box">
+<ul>
+  <li class="no">Kein Prompt-Format</li>
+  <li class="no">Kein Scene-Graph-Framework</li>
+  <li class="no">Kein KI-Produkt</li>
+  <li class="no">Kein Ersatz für CV- oder ML-Modelle</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>3. Abgrenzung zu bestehenden Ansätzen</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Ansatz</th>
+  <th>Typisch</th>
+  <th>UIN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Scene Graph Generation (SGG)</td>
+  <td>ML-basiert, probabilistisch</td>
+  <td>Deterministisch, schema-validiert</td>
+</tr>
+<tr>
+  <td>Prompt-Formate</td>
+  <td>Freitext, instabil</td>
+  <td>Struktur + optionale Semantik</td>
+</tr>
+<tr>
+  <td>CV Pipelines</td>
+  <td>Tool- & modellabhängig</td>
+  <td>Tool-agnostische Zielrepräsentation</td>
+</tr>
+<tr>
+  <td>Proprietäre APIs</td>
+  <td>Kosten, Limits, Lock-in</td>
+  <td>Offline, kostenlos, unbegrenzt</td>
+</tr>
+</tbody>
+</table>
+
+<hr/>
+
+<h2>4. Zielgruppen</h2>
+
+<div class="box">
+<ul>
+  <li>Standardisierung & Forschung</li>
+  <li>Forensik & Dokumentation</li>
+  <li>CAD / Simulation / Digital Twins</li>
+  <li>Embedded & Edge-Systeme</li>
+  <li>KI-Systeme (optional, nachgelagert)</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>5. Rolle von KI im UIN-Ökosystem</h2>
+
+<p>
+UIN ist <strong>KI-neutral</strong>.
+</p>
+
+<div class="box">
+<ul>
+  <li class="yes">KI darf UIN <em>lesen</em></li>
+  <li class="yes">KI darf UIN <em>erzeugen</em></li>
+  <li class="yes">KI darf UIN <em>anreichern</em> (via Plugins)</li>
+  <li class="no">KI ist <strong>keine Voraussetzung</strong></li>
+  <li class="no">KI beeinflusst niemals die Core-Validität</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>6. Kernversprechen</h2>
+
+<div class="box">
+<ul>
+  <li><strong>Stabilität:</strong> Einmal definiert, langfristig nutzbar</li>
+  <li><strong>Portabilität:</strong> Von Papier bis GPU</li>
+  <li><strong>Kontrolle:</strong> Keine impliziten Annahmen</li>
+  <li><strong>Verbreitung:</strong> Niedrige Einstiegshürde</li>
+</ul>
+</div>
+
+<hr/>
+
+<h2>7. Ein-Satz-Definition (öffentlich)</h2>
+
+<div class="box">
+<p>
+<strong>UIN ist ein offener, deterministischer Standard zur strukturierten Beschreibung von Bildern und Szenen – unabhängig davon, ob sie von Menschen, Algorithmen oder KI erzeugt werden.</strong>
+</p>
+</div>
+
+<footer>
+UIN · Universal Image Notation<br/>
+Designed for clarity, longevity, and system interoperability.
+</footer>
+
+</body>
+</html>

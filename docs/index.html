@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>UIN Documentation Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #020617;
+    color: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* Navigation bar */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid #1e293b;
+    background: #020617;
+  }
+
+  .nav .group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: #94a3b8;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+  }
+
+  .nav a:hover {
+    color: #38bdf8;
+    border-color: #1e293b;
+  }
+
+  .nav .center a {
+    font-weight: 600;
+    color: #e5e7eb;
+  }
+
+  /* iframe container */
+  .content {
+    flex: 1;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #020617;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <!-- Left -->
+  <div class="group">
+    <a href="#" onclick="loadPage(0)">◀ Prev</a>
+  </div>
+
+  <!-- Center -->
+  <div class="group center">
+    <a href="#" onclick="loadPage(0)">UIN Core</a>
+    <a href="#" onclick="loadPage(1)">System Context</a>
+    <a href="#" onclick="loadPage(2)">Positioning</a>
+  </div>
+
+  <!-- Right -->
+  <div class="group">
+    <a href="#" onclick="loadPage(2)">Next ▶</a>
+  </div>
+</div>
+
+<div class="content">
+  <iframe id="viewer" src="uin.html"></iframe>
+</div>
+
+<script>
+  const pages = ["uin.html", "uin2.html", "uin3.html"];
+  let current = 0;
+
+  function loadPage(index) {
+    if (index < 0) index = 0;
+    if (index >= pages.length) index = pages.length - 1;
+    current = index;
+    document.getElementById("viewer").src = pages[current];
+  }
+</script>
+
+</body>
+</html>
+

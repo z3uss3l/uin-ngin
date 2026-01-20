@@ -1,5 +1,6 @@
-# uin-ngin
+# uin-nginc
 ![uin logo](https://github.com/z3uss3l/uin-universal-image-notation/blob/main/uin_logo.png)
+[mehr zu UIN](https://raw.githack.com/z3uss3l/uin-ngin/refs/heads/main/docs/index.html)
 
 *can you imagine?*
 

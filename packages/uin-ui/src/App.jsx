@@ -27,36 +27,59 @@ const samples = {
 
 function buildRelativePrompt(uin) {
   const objects = Array.isArray(uin?.objects) ? uin.objects : [];
-  const human = objects.find((o) => o?.type === 'human' && o?.position);
-  const tree = objects.find((o) => o?.type === 'tree' && o?.position);
   
   console.log('buildRelativePrompt debug:');
   console.log('All objects:', objects.map(o => ({ type: o.type, position: o.position })));
-  console.log('Human found:', human ? human.position : 'none');
-  console.log('Tree found:', tree ? tree.position : 'none');
   
-  if (!human || !tree) {
-    console.log('No human-tree pair found');
+  // Try to find any two objects for relative positioning
+  const human = objects.find((o) => o?.type === 'human' && o?.position);
+  const tree = objects.find((o) => o?.type === 'tree' && o?.position);
+  const car = objects.find((o) => o?.type === 'car' && o?.position);
+  const building = objects.find((o) => o?.type === 'building' && o?.position);
+  
+  console.log('Objects found:', { human: !!human, tree: !!tree, car: !!car, building: !!building });
+  
+  // Use any two objects we can find
+  let obj1, obj2, obj1Name, obj2Name;
+  
+  if (human && tree) {
+    obj1 = human; obj2 = tree; obj1Name = 'person'; obj2Name = 'tree';
+  } else if (human && car) {
+    obj1 = human; obj2 = car; obj1Name = 'person'; obj2Name = 'car';
+  } else if (tree && car) {
+    obj1 = tree; obj2 = car; obj1Name = 'tree'; obj2Name = 'car';
+  } else if (human && building) {
+    obj1 = human; obj2 = building; obj1Name = 'person'; obj2Name = 'building';
+  } else if (tree && building) {
+    obj1 = tree; obj2 = building; obj1Name = 'tree'; obj2Name = 'building';
+  } else if (car && building) {
+    obj1 = car; obj2 = building; obj1Name = 'car'; obj2Name = 'building';
+  } else {
+    console.log('No suitable object pair found for relative positioning');
     return '';
   }
 
-  const dx = (human.position.x ?? 0) - (tree.position.x ?? 0);
-  const dy = (human.position.y ?? 0) - (tree.position.y ?? 0);
-  const dz = (human.position.z ?? 0) - (tree.position.z ?? 0);
+  console.log(`Using ${obj1Name} and ${obj2Name} for relative positioning`);
+  console.log(`${obj1Name} position:`, obj1.position);
+  console.log(`${obj2Name} position:`, obj2.position);
+
+  const dx = (obj1.position.x ?? 0) - (obj2.position.x ?? 0);
+  const dy = (obj1.position.y ?? 0) - (obj2.position.y ?? 0);
+  const dz = (obj1.position.z ?? 0) - (obj2.position.z ?? 0);
 
   console.log('Differences:', { dx, dy, dz });
 
   const parts = [];
   const t = 0.25;
-  if (dx > t) parts.push('person is to the right of the tree');
-  else if (dx < -t) parts.push('person is to the left of the tree');
-  else parts.push('person is next to the tree');
+  if (dx > t) parts.push(`${obj1Name} is to the right of the ${obj2Name}`);
+  else if (dx < -t) parts.push(`${obj1Name} is to the left of the ${obj2Name}`);
+  else parts.push(`${obj1Name} is next to the ${obj2Name}`);
 
-  if (dy > t) parts.push('person is above the tree');
-  else if (dy < -t) parts.push('person is below the tree');
+  if (dy > t) parts.push(`${obj1Name} is above the ${obj2Name}`);
+  else if (dy < -t) parts.push(`${obj1Name} is below the ${obj2Name}`);
 
-  if (dz > t) parts.push('person is in front of the tree');
-  else if (dz < -t) parts.push('person is behind the tree');
+  if (dz > t) parts.push(`${obj1Name} is in front of the ${obj2Name}`);
+  else if (dz < -t) parts.push(`${obj1Name} is behind the ${obj2Name}`);
 
   const result = parts.length ? parts.join(', ') : '';
   console.log('Relative prompt result:', result);
