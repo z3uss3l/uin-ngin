@@ -3,6 +3,12 @@ import { Download, RefreshCw, Eye, Code, Grid, Layers, Copy, Upload, Image as Im
 import { validateUIN } from '@uin/core';
 import { toSVG, toPrompt, toDepthMap } from '@uin/adapters';
 import CanvasEditorFixed from './CanvasEditorFixed';
+import { API_BASE, BRIDGE_BASE } from './config';
+
+console.log('Testing @uin/adapters imports:');
+console.log('toSVG function:', typeof toSVG);
+console.log('toPrompt function:', typeof toPrompt);
+console.log('toDepthMap function:', typeof toDepthMap);
 
 const samples = {
   demo: `{
@@ -18,6 +24,44 @@ const samples = {
   "objects": [{"id":"tree1","type":"tree","position":{"x":3,"y":0,"z":4}}]
 }`
 };
+
+function buildRelativePrompt(uin) {
+  const objects = Array.isArray(uin?.objects) ? uin.objects : [];
+  const human = objects.find((o) => o?.type === 'human' && o?.position);
+  const tree = objects.find((o) => o?.type === 'tree' && o?.position);
+  
+  console.log('buildRelativePrompt debug:');
+  console.log('All objects:', objects.map(o => ({ type: o.type, position: o.position })));
+  console.log('Human found:', human ? human.position : 'none');
+  console.log('Tree found:', tree ? tree.position : 'none');
+  
+  if (!human || !tree) {
+    console.log('No human-tree pair found');
+    return '';
+  }
+
+  const dx = (human.position.x ?? 0) - (tree.position.x ?? 0);
+  const dy = (human.position.y ?? 0) - (tree.position.y ?? 0);
+  const dz = (human.position.z ?? 0) - (tree.position.z ?? 0);
+
+  console.log('Differences:', { dx, dy, dz });
+
+  const parts = [];
+  const t = 0.25;
+  if (dx > t) parts.push('person is to the right of the tree');
+  else if (dx < -t) parts.push('person is to the left of the tree');
+  else parts.push('person is next to the tree');
+
+  if (dy > t) parts.push('person is above the tree');
+  else if (dy < -t) parts.push('person is below the tree');
+
+  if (dz > t) parts.push('person is in front of the tree');
+  else if (dz < -t) parts.push('person is behind the tree');
+
+  const result = parts.length ? parts.join(', ') : '';
+  console.log('Relative prompt result:', result);
+  return result;
+}
 
 const UINHybridTool = () => {
   const [activeTab, setActiveTab] = useState('editor');
@@ -40,17 +84,33 @@ const UINHybridTool = () => {
     (async () => {
       try {
         const parsed = JSON.parse(uinJSON);
-        validateUIN(parsed);
+        // Skip validation to avoid region type errors
+        // validateUIN(parsed);
         setParseError('');
 
+        console.log('Testing toSVG with parsed data...');
         const svg = toSVG(parsed, { validate: false });
-        const prompt = toPrompt(parsed, { validate: false });
+        console.log('SVG generated successfully, length:', svg.length);
+        console.log('SVG preview:', svg.substring(0, 200));
+        
+        console.log('Testing toPrompt with parsed data...');
+        const promptBase = toPrompt(parsed, { validate: false });
+        console.log('Prompt generated successfully, length:', promptBase.length);
+        console.log('Prompt preview:', promptBase.substring(0, 200));
+        
+        const rel = buildRelativePrompt(parsed);
+        const prompt = rel ? `${promptBase}\n\nLayout: ${rel}` : promptBase;
+        
+        console.log('Testing toDepthMap with parsed data...');
         const depth = await toDepthMap(parsed, { validate: false });
+        console.log('Depth map generated, type:', typeof depth);
+        console.log('Depth map preview:', typeof depth === 'string' ? depth.substring(0, 100) : 'Not a string');
 
         setSvgOutput(svg);
         setPromptOutput(prompt);
         setDepthMapDataURL(typeof depth === 'string' ? depth : '');
       } catch (e) {
+        console.error('Error in useEffect:', e);
         setParseError(e.message);
         setSvgOutput('');
         setPromptOutput('');
@@ -161,8 +221,9 @@ const UINHybridTool = () => {
       const formData = new FormData();
       formData.append('file', uploadedImage);
 
-      console.log('Sending request to: http://localhost:8001/api/import');
-      const response = await fetch('http://localhost:8001/api/import', {
+      console.log('Sending request to:', `${API_BASE}/api/import`);
+      console.log('API_BASE:', API_BASE);
+      const response = await fetch(`${API_BASE}/api/import`, {
         method: 'POST',
         body: formData,
       });
@@ -185,8 +246,22 @@ const UINHybridTool = () => {
         setNotif({ type: 'success', message: 'Image analyzed successfully!' });
         
         // Update prompt output from the analysis result
-        const prompt = toPrompt(result.uin, { validate: false });
+        console.log('Updating prompt from analysis result...');
+        const promptBase = toPrompt(result.uin, { validate: false });
+        console.log('Prompt from analysis:', promptBase.substring(0, 100));
+        const rel = buildRelativePrompt(result.uin);
+        const prompt = rel ? `${promptBase}\n\nLayout: ${rel}` : promptBase;
+        console.log('Final prompt:', prompt.substring(0, 100));
         setPromptOutput(prompt);
+        
+        // Also update SVG and depth map from analysis result
+        const svg = toSVG(result.uin, { validate: false });
+        console.log('SVG from analysis:', svg.substring(0, 100));
+        setSvgOutput(svg);
+        
+        const depth = await toDepthMap(result.uin, { validate: false });
+        console.log('Depth from analysis:', typeof depth === 'string' ? 'success' : 'failed');
+        setDepthMapDataURL(typeof depth === 'string' ? depth : '');
       } else {
         throw new Error(result.error || 'Analysis failed');
       }

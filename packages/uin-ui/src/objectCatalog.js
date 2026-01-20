@@ -14,7 +14,7 @@ export const OBJECT_CATALOG = [
     description: 'Single person, portrait style',
   },
   {
-    type: 'human',
+    type: 'human_full',
     label: 'Person (full body)',
     color: '#2563eb',
     defaultMeasurements: {
@@ -24,9 +24,9 @@ export const OBJECT_CATALOG = [
     description: 'Single person, full body view',
   },
   {
-    type: 'human',
+    type: 'human_two',
     label: 'Two people',
-    color: '#1d4ed8',
+    color: '#1d4ed4',
     defaultMeasurements: {
       height: { value: 1.7, unit: 'm' },
     },
@@ -34,9 +34,9 @@ export const OBJECT_CATALOG = [
     description: 'Two people as main subject',
   },
   {
-    type: 'human',
+    type: 'human_group',
     label: 'Group of people',
-    color: '#1e40af',
+    color: '#0891b2',
     defaultMeasurements: {
       height: { value: 1.7, unit: 'm' },
     },
@@ -56,9 +56,9 @@ export const OBJECT_CATALOG = [
     description: 'Single tree as subject',
   },
   {
-    type: 'tree',
+    type: 'forest_tree',
     label: 'Forest tree',
-    color: '#16a34a',
+    color: '#15803d',
     defaultMeasurements: {
       height: { value: 10, unit: 'm' },
     },
@@ -78,9 +78,9 @@ export const OBJECT_CATALOG = [
     description: 'Generic car or vehicle',
   },
   {
-    type: 'car',
+    type: 'sports_car',
     label: 'Sports car',
-    color: '#facc15',
+    color: '#f97316',
     defaultMeasurements: {
       length: { value: 4.5, unit: 'm' },
     },
@@ -92,7 +92,7 @@ export const OBJECT_CATALOG = [
   {
     type: 'building',
     label: 'Building',
-    color: '#f97316',
+    color: '#dc2626',
     defaultMeasurements: {
       floors: { value: 5, unit: 'level' },
     },
@@ -100,9 +100,9 @@ export const OBJECT_CATALOG = [
     description: 'Generic building or structure',
   },
   {
-    type: 'building',
+    type: 'skyscraper',
     label: 'Skyscraper',
-    color: '#fb923c',
+    color: '#7c2d12',
     defaultMeasurements: {
       floors: { value: 20, unit: 'level' },
     },
@@ -110,9 +110,9 @@ export const OBJECT_CATALOG = [
     description: 'High-rise skyscraper',
   },
   {
-    type: 'building',
+    type: 'house',
     label: 'House',
-    color: '#fed7aa',
+    color: '#fbbf24',
     defaultMeasurements: {
       floors: { value: 2, unit: 'level' },
     },

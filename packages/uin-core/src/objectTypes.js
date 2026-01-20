@@ -26,5 +26,9 @@ export const OBJECT_TYPES = {
     floorHeight: 3.0,
     features: ['roof_type', 'windows'],
     required: ['position']
+  },
+  region: {
+    description: 'Detected region from image analysis',
+    required: ['position']
   }
 };
