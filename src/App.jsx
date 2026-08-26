@@ -2,11 +2,12 @@ src/App.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Download, RefreshCw, Eye, Code, Grid, Layers, Image as ImageIcon, Copy, Sparkles } from 'lucide-react';
 import { OBJECT_TYPES, renderObject } from './objectLibrary';
+import { BRIDGE_BASE } from './config';
 
 const UINHybridTool = () => {
   const [activeTab, setActiveTab] = useState('editor');
   const [uinJSON, setUinJSON] = useState(`{
-  "version": "0.3",
+  "version": "0.8",
   "metadata": {
     "description": "Forensische Testszene mit Depth-Map",
     "coordinate_system": "world_space_meters"
@@ -263,7 +264,7 @@ const UINHybridTool = () => {
       setComfyStatus('⏳ Generiere...');
       const depthMap = generateDepthMap();
       
-      const response = await fetch('http://localhost:3001/api/generate', {
+      const response = await fetch(`${BRIDGE_BASE}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -294,7 +295,7 @@ const UINHybridTool = () => {
   return (
     <div className="w-full min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       <div className="bg-gray-800 border-b border-gray-700 p-4">
-        <h1 className="text-2xl font-bold mb-2">UIN Hybrid-Tool v0.3</h1>
+        <h1 className="text-2xl font-bold mb-2">UIN Hybrid-Tool v0.8</h1>
         <p className="text-sm text-gray-400">Universal Image Notation: JSON → SVG → Depth-Map → ComfyUI</p>
       </div>
 

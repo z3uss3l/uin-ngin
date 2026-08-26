@@ -4,8 +4,8 @@ from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from uin_ngin.metrics.registry import MetricsRegistry
-from uin_ngin.import.extractor import ImageExtractor
-from uin_ngin.import.converter import FeatureToUINConverter
+from uin_ngin.image_import.extractor import ImageExtractor
+from uin_ngin.image_import.converter import FeatureToUINConverter
 
 app = FastAPI(title="UIN-NGIN API", version="0.7.0")
 metrics = MetricsRegistry()

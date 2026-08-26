@@ -6,9 +6,9 @@ const VIEW_HEIGHT = 400;
 
 function worldToScreen(pos, bounds) {
   const xRange = bounds.x[1] - bounds.x[0] || 1;
-  const yRange = bounds.y[1] - bounds.y[0] || 1;
+  const zRange = bounds.z[1] - bounds.z[0] || 1;
   const sx = ((pos.x - bounds.x[0]) / xRange) * VIEW_WIDTH;
-  const sy = VIEW_HEIGHT - ((pos.y - bounds.y[0]) / yRange) * VIEW_HEIGHT;
+  const sy = VIEW_HEIGHT - ((pos.z - bounds.z[0]) / zRange) * VIEW_HEIGHT;
   return { x: sx, y: sy };
 }
 
@@ -177,8 +177,8 @@ export default function CanvasEditorFixed({ uinJSON, onChange }) {
         if (distance <= 12) {
           setSelectedObjectIndex(i);
           setIsDragging(true);
-          const { x: objX, y: objY } = worldToScreen(obj.position, bounds);
-          setDragOffset({ x: x - objX, y: y - objY });  
+          const { x: worldX, z: worldZ } = worldToScreen(obj.position, bounds);
+          setDragOffset({ x: x - worldX, y: y - objY });  
           return;
         }
       }
@@ -194,16 +194,16 @@ export default function CanvasEditorFixed({ uinJSON, onChange }) {
 
     // Convert screen to world coordinates
     const xRange = bounds.x[1] - bounds.x[0] || 1;
-    const yRange = bounds.y[1] - bounds.y[0] || 1;
+    const zRange = bounds.z[1] - bounds.z[0] || 1;
     const worldX = bounds.x[0] + (x / VIEW_WIDTH) * xRange;
-    const worldY = bounds.y[0] + ((VIEW_HEIGHT - y) / VIEW_HEIGHT) * yRange;
+    const worldZ = bounds.z[0] + ((VIEW_HEIGHT - y) / VIEW_HEIGHT) * zRange;
 
     const newDoc = { ...doc, objects: [...objects] };
     const obj = { ...newDoc.objects[selectedObjectIndex] };
     obj.position = { 
       ...(obj.position || { x: 0, y: 0, z: 0 }), 
       x: worldX + dragOffset.x, 
-      y: worldY + dragOffset.y
+      z: worldZ + dragOffset.y  // Fixed: was using y for Z
     };
     newDoc.objects[selectedObjectIndex] = obj;
 

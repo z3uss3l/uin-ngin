@@ -17,7 +17,9 @@ export function sortByZ(objects, reverse = false) {
  * Near objects (low z) = scale 1.0, far objects (high z) = scale 0.0
  */
 export function scaleByDepth(z, bounds) {
-  const depthNorm = (z - bounds.z[0]) / (bounds.z[1] - bounds.z[0]);
+  const range = bounds.z[1] - bounds.z[0];
+  if (range === 0) return 1;
+  const depthNorm = (z - bounds.z[0]) / range;
   return 1 - depthNorm;
 }
 
@@ -25,7 +27,9 @@ export function scaleByDepth(z, bounds) {
  * Calculate opacity based on depth (atmospheric perspective)
  */
 export function opacityByDepth(z, bounds) {
-  const depthNorm = (z - bounds.z[0]) / (bounds.z[1] - bounds.z[0]);
+  const range = bounds.z[1] - bounds.z[0];
+  if (range === 0) return 1;
+  const depthNorm = (z - bounds.z[0]) / range;
   return 1 - (depthNorm * 0.3); // Near: 1.0, Far: 0.7
 }
 
@@ -33,8 +37,10 @@ export function opacityByDepth(z, bounds) {
  * Convert world coordinates to screen coordinates
  */
 export function worldToScreen(position, bounds, viewport) {
-  const xNorm = (position.x - bounds.x[0]) / (bounds.x[1] - bounds.x[0]);
-  const yNorm = 1 - (position.y - bounds.y[0]) / (bounds.y[1] - bounds.y[0]);
+  const xRange = bounds.x[1] - bounds.x[0];
+  const yRange = bounds.y[1] - bounds.y[0];
+  const xNorm = xRange === 0 ? 0.5 : (position.x - bounds.x[0]) / xRange;
+  const yNorm = yRange === 0 ? 0.5 : 1 - (position.y - bounds.y[0]) / yRange;
   return {
     x: xNorm * viewport.width,
     y: yNorm * viewport.height

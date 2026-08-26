@@ -55,9 +55,9 @@ const UINHybridTool = () => {
       const parsed = JSON.parse(uinJSON);
       validateUIN(parsed);
       setParseError('');
-      setSvgOutput(toSVG(parsed, { validate: false }));
-      setPromptOutput(toPrompt(parsed, { validate: false }));
-      toDepthMap(parsed, { validate: false }).then(dataURL => setDepthMapDataURL(dataURL));
+      setSvgOutput(toSVG(parsed));
+      setPromptOutput(toPrompt(parsed));
+      toDepthMap(parsed).then(dataURL => setDepthMapDataURL(dataURL));
     } catch (e) {
       setParseError(e.message);
       setSvgOutput('');

@@ -8,11 +8,14 @@
     "lerna": "^9.0.3"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build",
-    "clean": "lerna clean"
+    "bootstrap": "npm install",
+    "build": "npm run build --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present",
+    "test:python": "pytest -q",
+    "test:node": "node --test tests/test_uin_core.mjs tests/test_adapters.mjs tests/test_logging.mjs tests/test_uin_version_contract.mjs",
+    "verify": "npm run test:python && npm run test:node",
+    "test:diagnostics": "python scripts/diagnostics.py"
   },
-  "dependencies": {
-    "build": "^0.1.4"
-  }
+  "version": "0.8.0",
+  "description": "Universal Image Notation Engine: canonical UIN v0.8 runtime, adapters, UI, CLI and services."
 }

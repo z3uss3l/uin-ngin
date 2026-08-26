@@ -1,11 +1,14 @@
 {
   "name": "@uin/adapters",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "type": "module",
   "exports": {
     ".": "./source/index.js"
   },
   "dependencies": {
     "@uin/core": "file:../uin-core"
+  },
+  "scripts": {
+    "build": "node -e \"console.log('@uin/adapters build: source-only package')\""
   }
 }

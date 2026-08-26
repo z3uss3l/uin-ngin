@@ -1,6 +1,6 @@
 [project]
-name = "uin-core"
-version = "1.0.0"
+name = "uin-ngin"
+version = "0.8.0"
 description = "Universal Image Notation – Core Engine"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -14,7 +14,6 @@ dependencies = [
   "jsonschema>=4.0",
   "fastapi>=0.110.0",
   "uvicorn>=0.27.0",
-  "mcp>=0.1.0",
   "requests>=2.32.0",
 ]
 
@@ -23,9 +22,17 @@ dev = [
   "pytest>=8.0.0",
   "requests>=2.32.0",
 ]
+mcp = [
+  "mcp>=0.1.0",
+]
+all = [
+  "pytest>=8.0.0",
+  "requests>=2.32.0",
+  "mcp>=0.1.0",
+]
 
 [project.scripts]
-uin = "uin.cli.main:main"
+uin = "uin.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

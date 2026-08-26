@@ -1,4 +1,33 @@
 export const OBJECT_TYPES = {
+  // v0.8 compatibility aliases/types
+  person: {
+    defaultHeight: 1.68,
+    proportions: { head: 0.08, torso: 0.4, legs: 0.52 },
+    features: ['hair', 'eyes', 'face', 'clothing'],
+    required: ['position'],
+    renderAs: 'human'
+  },
+  bench: {
+    features: ['material', 'color'],
+    required: ['position'],
+    renderAs: 'box'
+  },
+  human_group: {
+    features: ['members', 'composition'],
+    required: ['position']
+  },
+  region: {
+    features: ['geometry', 'area', 'perimeter'],
+    required: ['position']
+  },
+  color_anchor: {
+    features: ['color', 'rgb'],
+    required: ['position']
+  },
+  box: {
+    features: ['dimensions', 'material'],
+    required: ['position']
+  },
   human: {
     defaultHeight: 1.68,
     proportions: {
@@ -7,11 +36,6 @@ export const OBJECT_TYPES = {
       legs: 0.52
     },
     features: ['hair', 'eyes', 'face', 'clothing'],
-    required: ['position']
-  },
-  human_group: {
-    defaultHeight: 1.7,
-    features: ['clothing'],
     required: ['position']
   },
   tree: {
@@ -30,9 +54,6 @@ export const OBJECT_TYPES = {
     defaultFloors: 2,
     floorHeight: 3.0,
     features: ['roof_type', 'windows'],
-    required: ['position']
-  },
-  region: {
     required: ['position']
   }
 };

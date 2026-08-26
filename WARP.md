@@ -199,7 +199,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
     - Tries `adapters.toDepthMap` first; if unavailable, falls back to an internal canvas-based generator that approximates depth from 3D positions.
   - ComfyUI integration:
     - `sendToComfyUI` posts depth maps to `/api/generate` (relative to the UI host, typically the Node bridge).
-    - `generateInComfyUI` calls `http://localhost:3001/api/generate` directly and surfaces simple status messages.
+    - `generateInComfyUI` calls `${REACT_APP_BRIDGE_BASE:-http://localhost:3001}/api/generate` directly and surfaces simple status messages.
   - For tests and situations without the workspace package, the component falls back from `require('@uin/adapters')` to a local `_adapters_stub`.
 
 ### Bridge server: React ↔ ComfyUI

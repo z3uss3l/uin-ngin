@@ -1,11 +1,12 @@
 # path: uin/core/schema.py
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Literal
 from uin.core.version import SCHEMA_VERSION
 
 
 class UINMeta(BaseModel):
-    schema: str = Field(default=SCHEMA_VERSION)
+    model_config = ConfigDict(populate_by_name=True)
+    schema_version: str = Field(default=SCHEMA_VERSION, alias="schema")
     compatibility: Literal["strict", "compatible", "lossy"] = "strict"
 
 

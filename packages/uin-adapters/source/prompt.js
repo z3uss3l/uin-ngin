@@ -8,36 +8,36 @@ import { UINParser, validateUIN } from '@uin/core';
  */
 export function toPrompt(input, options = {}) {
   const parser = new UINParser(input);
-
+  
   // Validate if requested
   if (options.validate !== false) {
     validateUIN(parser.raw);
   }
-
+  
   const parts = [];
-
+  
   // Global lighting
   const lighting = parser.raw.global?.lighting?.type;
   if (lighting) {
     parts.push(`${lighting} lighting`);
   }
-
+  
   // Objects
   parser.objects.forEach(obj => {
     const objDesc = describeObject(obj);
     if (objDesc) parts.push(objDesc);
   });
-
+  
   // Quality tags
   if (options.qualityTags !== false) {
     parts.push('highly detailed', 'photorealistic', 'cinematic composition', 'masterpiece');
   }
-
+  
   // Style modifiers
   if (options.style) {
     parts.push(options.style);
   }
-
+  
   return parts.join(', ');
 }
 
@@ -55,7 +55,7 @@ export function toNegativePrompt(options = {}) {
     'duplicate',
     'extra limbs'
   ];
-
+  
   return [...defaults, ...(options.additional || [])].join(', ');
 }
 
@@ -64,19 +64,17 @@ export function toNegativePrompt(options = {}) {
  */
 function describeObject(obj) {
   // If UI/catalog already provided a good natural-language description, prefer that
-  // If UI/catalog already provided a good natural-language description, prefer that.
-  // Exception: Ignore generic "Detected region..." descriptions or if type is region.
-  if (obj.description && obj.type !== 'region' && !obj.description.startsWith('Detected region')) {
+  if (obj.description) {
     return obj.description;
   }
 
   const parts = [];
-
+  
   switch (obj.type) {
     case 'human': {
       // Base description
       parts.push(obj.description || 'person');
-
+      
       // Hair
       if (obj.features?.hair) {
         const hair = obj.features.hair;
@@ -84,36 +82,25 @@ function describeObject(obj) {
         if (hair.color?.hex) parts.push('distinctive hair color');
         if (hair.style) parts.push(`${hair.style} hairstyle`);
       }
-
+      
       // Eyes
       if (obj.features?.eyes?.color) {
         parts.push(`${obj.features.eyes.color} eyes`);
       }
-
+      
       // Clothing
       if (obj.features?.clothing?.color) {
         parts.push('wearing colorful clothing');
       }
-
+      
       // Expression
       if (obj.features?.face?.expression) {
         parts.push(obj.features.face.expression);
       }
-
+      
       break;
     }
-
-    case 'human_group': {
-      parts.push(obj.description || 'group of people');
-      parts.push('diverse group');
-      parts.push('standing together');
-
-      if (obj.features?.clothing?.color) {
-        parts.push('colorful clothing');
-      }
-      break;
-    }
-
+    
     case 'tree': {
       const height = obj.measurements?.height?.value || obj.defaultHeight;
       if (height > 10) {
@@ -123,27 +110,50 @@ function describeObject(obj) {
       } else {
         parts.push('small tree');
       }
-
+      
       if (obj.features?.leaf_type) {
         parts.push(`${obj.features.leaf_type} leaves`);
       }
-
+      
       // Position context
       if (obj.position.z > 2) {
         parts.push('in background');
       }
-
+      
       break;
     }
-
+    
     case 'car': {
       const type = obj.features?.type || 'modern';
       parts.push(`${type} car`);
-
+      
       if (obj.position.z > 2) {
         parts.push('in distance');
       }
+      
+      break;
+    }
+    
+    case 'box': {
+      parts.push('box');
+      if (obj.features?.material) parts.push(`${obj.features.material} material`);
+      break;
+    }
 
+    case 'region': {
+      parts.push('defined image region');
+      break;
+    }
+
+    case 'color_anchor': {
+      const c = obj.features?.color;
+      if (c && typeof c === 'object') parts.push(`color anchor rgb(${c.r}, ${c.g}, ${c.b})`);
+      else parts.push('color anchor');
+      break;
+    }
+
+    case 'human_group': {
+      parts.push('group of people');
       break;
     }
 
@@ -156,19 +166,19 @@ function describeObject(obj) {
       } else {
         parts.push('building');
       }
-
+      
       if (obj.features?.roof_type) {
         parts.push(`with ${obj.features.roof_type} roof`);
       }
-
+      
       if (obj.position.z > 3) {
         parts.push('in far background');
       }
-
+      
       break;
     }
   }
-
+  
   return parts.join(', ');
 }
 
@@ -177,7 +187,7 @@ function describeObject(obj) {
  */
 export function toStructuredPrompt(input, options = {}) {
   const parser = new UINParser(input);
-
+  
   return {
     positive: toPrompt(input, options),
     negative: toNegativePrompt(options),
@@ -192,16 +202,16 @@ export function toStructuredPrompt(input, options = {}) {
 
 function calculateComplexity(parser) {
   let score = 0;
-
+  
   // Object count
   score += parser.objects.length * 2;
-
+  
   // Features
   parser.objects.forEach(obj => {
     if (obj.features) score += Object.keys(obj.features).length;
     if (obj.measurements) score += Object.keys(obj.measurements).length;
   });
-
+  
   if (score < 5) return 'simple';
   if (score < 15) return 'medium';
   return 'complex';

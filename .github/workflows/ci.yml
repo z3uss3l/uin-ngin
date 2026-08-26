@@ -53,6 +53,10 @@ jobs:
         run: |
           cd packages/uin-ui
           npm run build
+      - name: Core and adapter smoke tests
+        run: |
+          node tests/test_uin_core.mjs
+          node tests/test_adapters.mjs
       - name: Smoke test server
         run: |
           # start server in background and check health

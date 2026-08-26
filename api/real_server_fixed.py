@@ -5,10 +5,10 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from uin_ngin.metrics.registry import MetricsRegistry
-from uin_ngin.import.extractor import ImageExtractor
-from uin_ngin.import.converter import FeatureToUINConverter
+from uin_ngin.image_import.extractor import ImageExtractor
+from uin_ngin.image_import.converter import FeatureToUINConverter
 
-app = FastAPI(title="UIN-NGIN Real API", version="0.7.0")
+app = FastAPI(title="UIN-NGIN Real API", version="0.8.0")
 
 # Add CORS middleware
 app.add_middleware(
@@ -25,7 +25,7 @@ uin_converter = FeatureToUINConverter()
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "0.7.0"}
+    return {"status": "ok", "version": "0.8.0"}
 
 @app.get("/metrics")
 def get_metrics():

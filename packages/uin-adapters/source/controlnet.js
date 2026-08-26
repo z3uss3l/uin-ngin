@@ -22,12 +22,16 @@ export async function toDepthMap(input, options = {}) {
  */
 export async function toComfyUIWorkflow(input, options = {}) {
   const parser = new UINParser(input);
+  if (options.validate !== false) validateUIN(parser.raw);
   const depthData = await generateDepthPNG(parser);
   
   // Load workflow template
-  const workflowTemplate = options.workflowTemplate || getDefaultWorkflow();
+  const workflowTemplate = structuredClone(options.workflowTemplate || getDefaultWorkflow());
   
   // Inject depth map reference
+  if (!workflowTemplate["11"]?.inputs || !workflowTemplate["6"]?.inputs) {
+    throw new Error('ComfyUI workflow template must provide nodes 6 and 11 with inputs');
+  }
   workflowTemplate["11"].inputs.image = "uin_depth_map.png";
   
   // Inject prompt if adapter available

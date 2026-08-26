@@ -84,7 +84,7 @@ def create_uin_package(image_path, output_dir, low_thresh=100, high_thresh=200):
     
     # 4. UIN-JSON mit extrahierten Attributen erstellen
     uin_data = {
-        "version": "0.6",
+        "version": "0.8",
         "metadata": {
             "source_image": str(image_path),
             "extraction_method": "canny_edge_detection",
@@ -156,7 +156,7 @@ def create_uin_package(image_path, output_dir, low_thresh=100, high_thresh=200):
 - Thresholds: {low_thresh}/{high_thresh}
 
 ---
-*Generiert mit UIN v0.6 - Universal Image Notation*
+*Generiert mit UIN v0.8 - Universal Image Notation*
 """
     
     readme_path = output_path / "README.md"

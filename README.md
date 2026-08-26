@@ -1,11 +1,14 @@
-# uin-nginc
-![uin logo](https://github.com/z3uss3l/uin-universal-image-notation/blob/main/uin_logo.png)
-[mehr zu UIN](https://raw.githack.com/z3uss3l/uin-ngin/refs/heads/main/docs/index.html)
-
+# uin-ngin
 *can you imagine?*
 
-Universal Image Notation Engine (UIN v0.7) – der Motor für Spezifikation, Ausführung und Monitoring.  
+Universal Image Notation Engine (UIN v0.8) – der Motor für Spezifikation, Ausführung und Monitoring.  
 Während [UIN](https://github.com/z3uss3l/uin-universal-image-notation) die Sprache liefert, ist uin-ngin die Engine, die diese Sprache **ausführt, testet und sichtbar macht**.
+ 
+## Aktueller konsolidierter Stand
+
+Der aktuelle Entwicklungsstand verwendet UIN v0.8 als kanonischen Contract. `packages/uin-core` ist die JavaScript/Browser-Core-Schicht, `packages/uin-adapters` kapselt SVG/Prompt/ControlNet, und `packages/uin-ui` ist die React-Oberfläche. Der Bildimport liegt unter `uin_ngin.image_import`; das frühere Verzeichnis `uin_ngin/import` bleibt aus Kompatibilitätsgründen erhalten.
+
+Die Repository-Tests decken Python-Backend, Schema-Konformität, Core-Validierung, Adapter-Integration und Bildimport ab. Die UI verwendet die lokalen Workspace-Pakete direkt statt fest eingecheckter `.tgz`-Artefakte.
 
 ---
 

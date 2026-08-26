@@ -19,13 +19,15 @@ export function generateDepthPNGNode(parser) {
 
   objects.forEach(obj => {
     const p = worldToScreen(obj.position, bounds, viewport);
-    const depthNorm = (obj.position.z - bounds.z[0]) / (bounds.z[1] - bounds.z[0]);
+    const zRange = bounds.z[1] - bounds.z[0];
+    const depthNorm = zRange === 0 ? 0.5 : (obj.position.z - bounds.z[0]) / zRange;
     const g = Math.floor((1 - depthNorm) * 255);
 
     ctx.fillStyle = `rgb(${g},${g},${g})`;
 
     switch (obj.type) {
-      case 'human': {
+      case 'human':
+      case 'person': {
         const height = obj.measurements?.height?.value || obj.defaultHeight;
         const h = height * 80;
         ctx.fillRect(p.x - 5, p.y - h, 10, h);
